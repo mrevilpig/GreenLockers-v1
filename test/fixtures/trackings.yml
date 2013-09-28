@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  package_id: 1
+  employee_id: 1
+  time: 2013-09-28 18:20:03
+  type: 
+  branch_id: 1
+
+two:
+  package_id: 1
+  employee_id: 1
+  time: 2013-09-28 18:20:03
+  type: 
+  branch_id: 1

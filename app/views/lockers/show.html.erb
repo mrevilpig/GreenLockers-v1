@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Branch:</strong>
+  <%= @locker.branch_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @locker.name %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @locker.size %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @locker.status %>
+</p>
+
+<%= link_to 'Edit', edit_locker_path(@locker) %> |
+<%= link_to 'Back', lockers_path %>

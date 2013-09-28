@@ -1,0 +1,51 @@
+<h1>Listing users</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>First name</th>
+      <th>Last name</th>
+      <th>Middle name</th>
+      <th>Home phone</th>
+      <th>Mobile phone</th>
+      <th>Email</th>
+      <th>St address</th>
+      <th>Apt address</th>
+      <th>City</th>
+      <th>State</th>
+      <th>Zip</th>
+      <th>Preferred branch</th>
+      <th>User name</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.first_name %></td>
+        <td><%= user.last_name %></td>
+        <td><%= user.middle_name %></td>
+        <td><%= user.home_phone %></td>
+        <td><%= user.mobile_phone %></td>
+        <td><%= user.email %></td>
+        <td><%= user.st_address %></td>
+        <td><%= user.apt_address %></td>
+        <td><%= user.city %></td>
+        <td><%= user.state_id %></td>
+        <td><%= user.zip %></td>
+        <td><%= user.preferred_branch_id %></td>
+        <td><%= user.user_name %></td>
+        <td><%= link_to 'Show', user %></td>
+        <td><%= link_to 'Edit', edit_user_path(user) %></td>
+        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New User', new_user_path %>

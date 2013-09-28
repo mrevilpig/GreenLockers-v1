@@ -1,0 +1,33 @@
+<h1>Listing lockers</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Branch</th>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Status</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @lockers.each do |locker| %>
+      <tr>
+        <td><%= locker.branch_id %></td>
+        <td><%= locker.name %></td>
+        <td><%= locker.size %></td>
+        <td><%= locker.status %></td>
+        <td><%= link_to 'Show', locker %></td>
+        <td><%= link_to 'Edit', edit_locker_path(locker) %></td>
+        <td><%= link_to 'Destroy', locker, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Locker', new_locker_path %>
