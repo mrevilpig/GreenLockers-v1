@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130928222423) do
+ActiveRecord::Schema.define(version: 20130929002818) do
 
   create_table "branches", force: true do |t|
     t.string   "name"
@@ -46,6 +46,8 @@ ActiveRecord::Schema.define(version: 20130928222423) do
     t.datetime "updated_at"
   end
 
+  add_index "lockers", ["branch_id"], name: "index_lockers_on_branch_id", using: :btree
+
   create_table "packages", force: true do |t|
     t.integer  "user_id"
     t.integer  "locker_id"
@@ -53,6 +55,9 @@ ActiveRecord::Schema.define(version: 20130928222423) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "packages", ["locker_id"], name: "index_packages_on_locker_id", using: :btree
+  add_index "packages", ["user_id"], name: "index_packages_on_user_id", using: :btree
 
   create_table "trackings", force: true do |t|
     t.integer  "package_id"
@@ -63,6 +68,10 @@ ActiveRecord::Schema.define(version: 20130928222423) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "trackings", ["branch_id"], name: "index_trackings_on_branch_id", using: :btree
+  add_index "trackings", ["employee_id"], name: "index_trackings_on_employee_id", using: :btree
+  add_index "trackings", ["package_id"], name: "index_trackings_on_package_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "first_name"
@@ -82,5 +91,7 @@ ActiveRecord::Schema.define(version: 20130928222423) do
     t.datetime "updated_at"
     t.string   "password"
   end
+
+  add_index "users", ["preferred_branch_id"], name: "index_users_on_preferred_branch_id", using: :btree
 
 end
