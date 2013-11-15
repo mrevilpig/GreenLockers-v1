@@ -11,7 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130929002818) do
+ActiveRecord::Schema.define(version: 20131115181646) do
+
+  create_table "boxes", force: true do |t|
+    t.integer  "locker_id"
+    t.string   "name"
+    t.integer  "size"
+    t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "boxes", ["locker_id"], name: "index_boxes_on_locker_id", using: :btree
 
   create_table "branches", force: true do |t|
     t.string   "name"
@@ -40,8 +51,6 @@ ActiveRecord::Schema.define(version: 20130929002818) do
   create_table "lockers", force: true do |t|
     t.integer  "branch_id"
     t.string   "name"
-    t.integer  "size"
-    t.integer  "status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

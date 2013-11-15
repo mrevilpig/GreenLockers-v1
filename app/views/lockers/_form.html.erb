@@ -13,19 +13,11 @@
 
   <div class="field">
     <%= f.label :branch_id %><br>
-    <%= f.number_field :branch_id %>
+    <%= f.collection_select :branch_id, Branch.order(:city),:id,:name, include_blank: true %>
   </div>
   <div class="field">
     <%= f.label :name %><br>
     <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :size %><br>
-    <%= f.number_field :size %>
-  </div>
-  <div class="field">
-    <%= f.label :status %><br>
-    <%= f.number_field :status %>
   </div>
   <div class="actions">
     <%= f.submit %>

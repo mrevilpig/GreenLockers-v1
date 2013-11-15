@@ -1,7 +1,7 @@
-class CreateLockers < ActiveRecord::Migration
+class CreateBoxes < ActiveRecord::Migration
   def change
-    create_table :lockers do |t|
-      t.integer :branch_id
+    create_table :boxes do |t|
+      t.integer :locker_id
       t.string :name
       t.integer :size
       t.integer :status

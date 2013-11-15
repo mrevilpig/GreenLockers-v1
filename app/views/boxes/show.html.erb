@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Branch:</strong>
+  <%= @box.branch.id %>
+</p>
+
+<p>
+  <strong>Locker</strong>
+  <%= @box.locker_id %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @box.name %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @box.size %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @box.status %>
+</p>
+
+<%= link_to 'Edit', edit_box_path(@box) %> |
+<%= link_to 'Back', boxes_path %>

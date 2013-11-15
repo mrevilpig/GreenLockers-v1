@@ -1,4 +1,6 @@
 GreenLockers::Application.routes.draw do
+  resources :lockers
+
   resources :employees
 
   resources :trackings
@@ -7,7 +9,7 @@ GreenLockers::Application.routes.draw do
 
   resources :branches
 
-  resources :lockers
+  resources :boxes
 
   resources :users
 

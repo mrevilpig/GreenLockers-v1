@@ -1,0 +1,35 @@
+<h1>Listing boxes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Branch</th>
+      <th>Locker</th>
+      <th>Name</th>
+      <th>Size</th>
+      <th>Status</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @boxes.each do |box| %>
+      <tr>
+        <td><%= box.branch.name %></td>
+        <td><%= box.locker.name %></td>
+        <td><%= box.name %></td>
+        <td><%= box.size %></td>
+        <td><%= box.status %></td>
+        <td><%= link_to 'Show', box %></td>
+        <td><%= link_to 'Edit', edit_box_path(box) %></td>
+        <td><%= link_to 'Destroy', box, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Box', new_box_path %>

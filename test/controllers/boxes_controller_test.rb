@@ -18,7 +18,7 @@ class LockersControllerTest < ActionController::TestCase
 
   test "should create locker" do
     assert_difference('Locker.count') do
-      post :create, locker: { branch_id: @locker.branch_id, name: @locker.name }
+      post :create, locker: { branch_id: @locker.branch_id, name: @locker.name, size: @locker.size, status: @locker.status }
     end
 
     assert_redirected_to locker_path(assigns(:locker))
@@ -35,7 +35,7 @@ class LockersControllerTest < ActionController::TestCase
   end
 
   test "should update locker" do
-    patch :update, id: @locker, locker: { branch_id: @locker.branch_id, name: @locker.name }
+    patch :update, id: @locker, locker: { branch_id: @locker.branch_id, name: @locker.name, size: @locker.size, status: @locker.status }
     assert_redirected_to locker_path(assigns(:locker))
   end
 

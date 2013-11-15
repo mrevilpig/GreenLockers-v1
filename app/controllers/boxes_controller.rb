@@ -1,10 +1,10 @@
-class LockersController < ApplicationController
-  before_action :set_locker, only: [:show, :edit, :update, :destroy]
+class BoxesController < ApplicationController
+  before_action :set_box, only: [:show, :edit, :update, :destroy]
 
   # GET /lockers
   # GET /lockers.json
   def index
-    @lockers = Locker.all
+    @boxes = Box.all
   end
 
   # GET /lockers/1
@@ -14,7 +14,7 @@ class LockersController < ApplicationController
 
   # GET /lockers/new
   def new
-    @locker = Locker.new
+    @box = Box.new
   end
 
   # GET /lockers/1/edit
@@ -24,15 +24,15 @@ class LockersController < ApplicationController
   # POST /lockers
   # POST /lockers.json
   def create
-    @locker = Locker.new(locker_params)
+    @box = Box.new(box_params)
 
     respond_to do |format|
-      if @locker.save
-        format.html { redirect_to @locker, notice: 'Locker was successfully created.' }
-        format.json { render action: 'show', status: :created, location: @locker }
+      if @box.save
+        format.html { redirect_to @box, notice: 'Locker was successfully created.' }
+        format.json { render action: 'show', status: :created, location: @box }
       else
         format.html { render action: 'new' }
-        format.json { render json: @locker.errors, status: :unprocessable_entity }
+        format.json { render json: @box.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -41,12 +41,12 @@ class LockersController < ApplicationController
   # PATCH/PUT /lockers/1.json
   def update
     respond_to do |format|
-      if @locker.update(locker_params)
-        format.html { redirect_to @locker, notice: 'Locker was successfully updated.' }
+      if @box.update(locker_params)
+        format.html { redirect_to @box, notice: 'Locker was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: 'edit' }
-        format.json { render json: @locker.errors, status: :unprocessable_entity }
+        format.json { render json: @box.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -54,21 +54,21 @@ class LockersController < ApplicationController
   # DELETE /lockers/1
   # DELETE /lockers/1.json
   def destroy
-    @locker.destroy
+    @box.destroy
     respond_to do |format|
-      format.html { redirect_to lockers_url }
+      format.html { redirect_to boxes_url }
       format.json { head :no_content }
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_locker
-      @locker = Locker.find(params[:id])
+    def set_box
+      @box = Box.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
-    def locker_params
-      params.require(:locker).permit(:branch_id, :name)
+    def box_params
+      params.require(:box).permit(:locker_id, :name, :size, :status)
     end
 end
