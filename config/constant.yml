@@ -1,0 +1,10 @@
+BOX_IDLE: 0  # empty
+BOX_DELIVERING: 1  # empty => occupied
+BOX_DELIVERED: 2   # occupied => empty
+BOX_RETURNING: 3   # empty => occupied
+BOX_RETURNED: 4    # occupied => empty
+BOX_ERROR: -1 # both possible
+  
+DOOR_OPENED_BY_PIN: '0'
+DOOR_OPENED_BY_BARCODE: '1'
+DOOR_OPENED_BY_STAFF: '2'

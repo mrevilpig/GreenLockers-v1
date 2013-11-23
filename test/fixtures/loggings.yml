@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  open_time: 2013-11-23 17:27:46
+  close_time: 2013-11-23 17:27:46
+  occupied_when_open: 
+  occupied_when_close: 
+  type: 
+  box_id: 1
+  employee_id: 1
+
+two:
+  open_time: 2013-11-23 17:27:46
+  close_time: 2013-11-23 17:27:46
+  occupied_when_open: 
+  occupied_when_close: 
+  type: 
+  box_id: 1
+  employee_id: 1

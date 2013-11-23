@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131123073758) do
+ActiveRecord::Schema.define(version: 20131123232746) do
 
   create_table "boxes", force: true do |t|
     t.integer  "locker_id"
@@ -56,6 +56,19 @@ ActiveRecord::Schema.define(version: 20131123073758) do
   end
 
   add_index "lockers", ["branch_id"], name: "index_lockers_on_branch_id", using: :btree
+
+  create_table "loggings", force: true do |t|
+    t.datetime "open_time"
+    t.datetime "close_time"
+    t.integer  "occupied_when_open",  limit: 1
+    t.integer  "occupied_when_close", limit: 1
+    t.integer  "type",                limit: 1
+    t.integer  "box_id"
+    t.integer  "employee_id"
+  end
+
+  add_index "loggings", ["box_id"], name: "index_loggings_on_box_id", using: :btree
+  add_index "loggings", ["employee_id"], name: "index_loggings_on_employee_id", using: :btree
 
   create_table "packages", force: true do |t|
     t.integer  "user_id"

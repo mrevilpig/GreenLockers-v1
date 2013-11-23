@@ -8,65 +8,67 @@ class ApiController < ApplicationController
     occupied_when_open = params[:occupied_when_open]
     occupied_when_close = params[:occupied_when_close]
     
+    constant = YAML.load_file("constant.yaml")
     #check if the status is error:
-    if @box.status == BOX_ERROR && !occupied_when_close && params[:type] == DOOR_OPENED_BY_STAFF
+    if @box.status == constant['BOX_ERROR'] && !occupied_when_close && params[:type] == constant['DOOR_OPENED_BY_STAFF']
       # if emptied by staff, reset it to IDLE
-      @box.status = BOX_IDLE
+      @box.status = constant['BOX_IDLE']
       return true
-    elsif @box.status == BOX_ERROR
+    elsif @box.status == constant['BOX_ERROR']
       return false
     end
     
     # check the status change and deal with the change
     if occupied_when_open && occupied_when_close
       #log weird behavior
+      #Logging.create(:package_id => nil, :employee_id => params[:staff_id], :type => params[:type], )
     elsif !occupied_when_open && !occupied_when_close
       #log weird behavior
     elsif !occupied_when_open && occupied_when_close
       #item put
-      if @box.status == BOX_DELIVERING
+      if @box.status == constant['BOX_DELIVERING']
         # if the box is assigned and waiting for delivery
-        if params[:type] == DOOR_OPENED_BY_PIN
+        if params[:type] == constant['DOOR_OPENED_BY_PIN']
           # log error behavior
           return true
         end
-        @box.status = BOX_DELIVERED
+        @box.status = constant['BOX_DELIVERED']
         # log box delivered (type, staff_id), generate PIN and send to user
-      elsif @box.status == BOX_RETURNING
+      elsif @box.status == constant['BOX_RETURNING']
         # if the box is assigned for dropoff and waiting for return
-        if params[:type] != DOOR_OPENED_BY_PIN
+        if params[:type] != constant['DOOR_OPENED_BY_PIN']
           # log error behavior
           return true
         end
-        @box.status = BOX_RETURNED
+        @box.status = constant['BOX_RETURNED']
         # log box delivered (type, user_id), assign deliverman to pick up
       else
         # if status doesn't match
-        @box.status = BOX_ERROR
+        @box.status = constant['BOX_ERROR']
         # log error behavior
         return true
       end
     else
       #item taken
-      if @box.status == BOX_DELIVERED
+      if @box.status == constant['BOX_DELIVERED']
         # if the item is delivered, waiting for user to pickup
-        if params[:type] != DOOR_OPENED_BY_PIN
+        if params[:type] != constant['DOOR_OPENED_BY_PIN']
           # log error behavior
           return true
         end
-        @box.status = BOX_IDLE
+        @box.status = constant['BOX_IDLE']
         # log item taken by user (type, user_id)
-      elsif @box.status = BOX_RETURNED
+      elsif @box.status = constant['BOX_RETURNED']
         # if the item is droped off, waiting for deliverman to pickup
-        if params[:type] == DOOR_OPENED_BY_PIN
+        if params[:type] == constant['DOOR_OPENED_BY_PIN']
           # log error behavior
           return true
         end
-        @box.status = BOX_IDLE
+        @box.status = constant['BOX_IDLE']
         # log item taken by deliverman (type, staff_id)
       else
         # if status doesn't match
-        @box.status = BOX_ERROR
+        @box.status = constant['BOX_ERROR']
         # log error behavior
         return true
       end
