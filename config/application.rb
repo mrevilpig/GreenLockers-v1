@@ -19,5 +19,15 @@ module GreenLockers
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+    config.BOX_IDLE = 0  # empty
+    config.BOX_DELIVERING = 1  # empty => occupied
+    config.BOX_DELIVERED = 2   # occupied => empty
+    config.BOX_RETURNING = 3   # empty => occupied
+    config.BOX_RETURNED = 4    # occupied => empty
+    config.BOX_ERROR = -1 # both possible
+    
+    config.DOOR_OPENED_BY_PIN = '0'
+    config.DOOR_OPENED_BY_BARCODE = '1'
+    config.DOOR_OPENED_BY_STAFF = '2'
   end
 end

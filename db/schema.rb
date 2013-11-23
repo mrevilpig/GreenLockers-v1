@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131115181646) do
+ActiveRecord::Schema.define(version: 20131123073758) do
 
   create_table "boxes", force: true do |t|
     t.integer  "locker_id"
@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20131115181646) do
     t.integer  "package_id"
     t.integer  "employee_id"
     t.datetime "time"
-    t.binary   "type"
+    t.integer  "type",        limit: 1
     t.integer  "branch_id"
     t.datetime "created_at"
     t.datetime "updated_at"

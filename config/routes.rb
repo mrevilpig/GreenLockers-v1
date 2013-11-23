@@ -1,4 +1,9 @@
 GreenLockers::Application.routes.draw do
+  post "api/DoorOpened"
+  post "api/DropOff"
+  post "api/UpdateAccessInfo"
+  post "api/UpdatePermission"
+  
   resources :lockers
 
   resources :employees
