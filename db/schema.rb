@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131123232746) do
+ActiveRecord::Schema.define(version: 20131124000748) do
 
   create_table "boxes", force: true do |t|
     t.integer  "locker_id"
@@ -65,6 +65,8 @@ ActiveRecord::Schema.define(version: 20131123232746) do
     t.integer  "type",                limit: 1
     t.integer  "box_id"
     t.integer  "employee_id"
+    t.integer  "box_status"
+    t.integer  "action_type",         limit: 1
   end
 
   add_index "loggings", ["box_id"], name: "index_loggings_on_box_id", using: :btree
