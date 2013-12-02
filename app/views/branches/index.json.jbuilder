@@ -1,4 +1,6 @@
-json.array!(@branches) do |branch|
-  json.extract! branch, :name, :st_address, :apt_address, :city, :state_id, :zip
-  json.url branch_url(branch, format: :json)
-end
+
+  json.status true
+  json.branches @branches do |b|
+    json.branch_name b.name
+    json.addr b.st_address
+  end

@@ -1,4 +1,18 @@
 class User < ActiveRecord::Base
   has_many :packages
-  belongs_to :branch, foreign_key :preferred_branch_id
+  has_many :permissions
+  belongs_to :preferred_branch
+  
+  def send_pick_up_pin pin
+    
+  end
+  
+  def send_drop_off_pin pin
+    
+  end
+  
+  def send_picked_up_notification
+    
+  end
+  
 end

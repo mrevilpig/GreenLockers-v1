@@ -1,4 +1,5 @@
 class Logging < ActiveRecord::Base
+  belongs_to :box
   
   def logAction params, box, action_type
       Logging.create(:open_time => Time.parse(params[:timestamp_open]), :close_time => Time.parse(params[:timestamp_close]), 

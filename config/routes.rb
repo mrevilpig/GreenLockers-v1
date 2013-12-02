@@ -1,8 +1,14 @@
 GreenLockers::Application.routes.draw do
+  root :to => "pages#index"
+  get "console" => "pages#console"
   post "api/DoorOpened"
   post "api/DropOff"
   post "api/UpdateAccessInfo"
   post "api/UpdatePermission"
+  
+  post "boxes/assign"
+  post "boxes/delivered"
+  post "boxes/picked_up"
   
   resources :lockers
 

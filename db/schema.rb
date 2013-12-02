@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131124000748) do
+ActiveRecord::Schema.define(version: 20131202005515) do
+
+  create_table "accesses", force: true do |t|
+    t.integer  "box_id"
+    t.string   "pin"
+    t.string   "update_request_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "barcode"
+  end
+
+  add_index "accesses", ["box_id"], name: "index_accesses_on_box_id", using: :btree
+  add_index "accesses", ["update_request_id"], name: "index_accesses_on_update_request_id", using: :btree
 
   create_table "boxes", force: true do |t|
     t.integer  "locker_id"
@@ -53,6 +65,8 @@ ActiveRecord::Schema.define(version: 20131124000748) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "permission_request_id"
+    t.string   "access_request_id"
   end
 
   add_index "lockers", ["branch_id"], name: "index_lockers_on_branch_id", using: :btree
@@ -74,14 +88,29 @@ ActiveRecord::Schema.define(version: 20131124000748) do
 
   create_table "packages", force: true do |t|
     t.integer  "user_id"
-    t.integer  "locker_id"
+    t.integer  "box_id"
     t.integer  "size"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "barcode"
+    t.integer  "status",     limit: 2
+  end
+
+  add_index "packages", ["box_id"], name: "index_packages_on_box_id", using: :btree
+  add_index "packages", ["user_id"], name: "index_packages_on_user_id", using: :btree
+
+  create_table "permissions", force: true do |t|
+    t.integer  "employee_id"
+    t.integer  "box_id"
+    t.integer  "level",             limit: 1
+    t.integer  "update_request_id", limit: 8
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "packages", ["locker_id"], name: "index_packages_on_locker_id", using: :btree
-  add_index "packages", ["user_id"], name: "index_packages_on_user_id", using: :btree
+  add_index "permissions", ["box_id"], name: "index_permissions_on_box_id", using: :btree
+  add_index "permissions", ["employee_id"], name: "index_permissions_on_employee_id", using: :btree
+  add_index "permissions", ["update_request_id"], name: "index_permissions_on_update_request_id", using: :btree
 
   create_table "trackings", force: true do |t|
     t.integer  "package_id"

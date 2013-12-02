@@ -1,6 +1,6 @@
 class LockersController < ApplicationController
-  before_action :set_locker, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_locker, only: [:show, :edit, :update, :destroy, :init_locker]
+  layout 'console'
   # GET /lockers
   # GET /lockers.json
   def index
@@ -28,6 +28,7 @@ class LockersController < ApplicationController
 
     respond_to do |format|
       if @locker.save
+        @locker.init_locker
         format.html { redirect_to @locker, notice: 'Locker was successfully created.' }
         format.json { render action: 'show', status: :created, location: @locker }
       else
@@ -54,6 +55,10 @@ class LockersController < ApplicationController
   # DELETE /lockers/1
   # DELETE /lockers/1.json
   def destroy
+    @locker.boxes.each do |b|
+      b.destroy
+      b.access.destroy
+    end
     @locker.destroy
     respond_to do |format|
       format.html { redirect_to lockers_url }
@@ -71,4 +76,5 @@ class LockersController < ApplicationController
     def locker_params
       params.require(:locker).permit(:branch_id, :name)
     end
+
 end

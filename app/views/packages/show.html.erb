@@ -6,13 +6,18 @@
 </p>
 
 <p>
-  <strong>Locker:</strong>
-  <%= @package.locker_id %>
+  <strong>Size:</strong>
+  <%= @package.print_size %>
 </p>
 
 <p>
-  <strong>Size:</strong>
-  <%= @package.size %>
+  <strong>Barcode:</strong>
+  <%= @package.barcode %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @package.print_status %>
 </p>
 
 <%= link_to 'Edit', edit_package_path(@package) %> |

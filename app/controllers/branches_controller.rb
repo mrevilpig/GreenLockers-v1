@@ -1,6 +1,6 @@
 class BranchesController < ApplicationController
   before_action :set_branch, only: [:show, :edit, :update, :destroy]
-
+  layout 'console'
   # GET /branches
   # GET /branches.json
   def index

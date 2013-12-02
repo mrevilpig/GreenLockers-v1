@@ -1,6 +1,6 @@
 class BoxesController < ApplicationController
-  before_action :set_box, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :delivered, :picked_up]
+  layout 'console'
   # GET /lockers
   # GET /lockers.json
   def index
@@ -10,6 +10,7 @@ class BoxesController < ApplicationController
   # GET /lockers/1
   # GET /lockers/1.json
   def show
+    @unassigned_packages = Package.where("box_id is NULL and (status = 0 OR status = 5)").order('updated_at ASC')
   end
 
   # GET /lockers/new
@@ -53,6 +54,36 @@ class BoxesController < ApplicationController
     @box.destroy
     respond_to do |format|
       format.html { redirect_to boxes_url }
+    end
+  end
+  
+  def assign
+    respond_to do |format|
+      if @box.deliver_package params[:package_id]
+        format.html { redirect_to @box, notice: 'Package successfully assigned.' }
+      else
+        format.html { redirect_to @box, notice: 'Package assign error.' }
+      end
+    end
+  end
+  
+  def delivered
+    respond_to do |format|
+      if @box.package_delivered
+        format.html { redirect_to @box, notice: 'Package successfully delivered.' }
+      else
+        format.html { redirect_to @box, notice: 'Package deliver error.' }
+      end
+    end
+  end
+  
+  def picked_up
+    respond_to do |format|
+      if @box.package_picked_up
+        format.html { redirect_to @box, notice: 'Package successfully picked up.' }
+      else
+        format.html { redirect_to @box, notice: 'Package pick up error.' }
+      end
     end
   end
 

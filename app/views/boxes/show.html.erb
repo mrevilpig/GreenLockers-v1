@@ -2,12 +2,12 @@
 
 <p>
   <strong>Branch:</strong>
-  <%= @box.branch.id %>
+  <%= @box.branch.name %>
 </p>
 
 <p>
-  <strong>Locker</strong>
-  <%= @box.locker_id %>
+  <strong>Locker:</strong>
+  <%= @box.locker.name %>
 </p>
 
 <p>
@@ -17,13 +17,70 @@
 
 <p>
   <strong>Size:</strong>
-  <%= @box.size %>
+  <%= @box.print_size %>
 </p>
 
 <p>
   <strong>Status:</strong>
-  <%= @box.status %>
+  <%= @box.print_status %>
 </p>
+
+<p>
+  <strong>Package:</strong>
+  ID: <%= @box.package.id if @box.package %> | 
+  Barcode: <%= @box.package.barcode if @box.package %>
+  <br />
+  <% if @box.package.nil? and @box.print_status == 'Idle' %>
+  	Assign Package: 
+  	<%= form_tag("assign", method: "post") do %>
+  	  <%= select '', :package_id, @unassigned_packages.collect{|p|
+	  	  	print_info = p.barcode
+	  	  	if p.status == '5'
+	  	  	  print_info = print_info + '(DropOff)'
+	  	  	end
+	  	  	[print_info, p.id]
+  	      }, include_blank: true %>
+  	  <%= submit_tag 'Assign' %>
+  	  <%= hidden_field_tag :id, @box.id %>
+  	<% end %>
+  <% end %>
+  
+  <% if @box.print_status == 'Delivering' %>
+  	<%= form_tag("delivered", method: "post") do %>
+  	  <%= submit_tag 'Delivered'%>
+  	  <%= hidden_field_tag :id, @box.id %>
+  	<% end %>
+  <% end %>
+  
+  <% if @box.print_status == 'Delivered' %>
+  	<%= form_tag("picked_up", method: "post") do %>
+  	  <%= submit_tag 'Picked Up'%>
+  	  <%= hidden_field_tag :id, @box.id %>
+  	<% end %>
+  <% end %>
+  
+</p>
+
+<p>
+  <strong>Access:</strong>
+  Pin: <%= @box.access.pin if @box.access %> | 
+  Barcode: <%= @box.access.barcode if @box.access %>
+</p>
+
+<p>
+  <strong>Permission:</strong>
+  Employees: 
+  <% if @box.permissions %>
+	<% @box.permissions.each do |p| %>
+	  <%= p.employee.name %>
+	<% end %>
+  <% end %>
+</p>
+
+
 
 <%= link_to 'Edit', edit_box_path(@box) %> |
 <%= link_to 'Back', boxes_path %>
+
+
+

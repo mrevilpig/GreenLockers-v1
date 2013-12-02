@@ -1,6 +1,6 @@
 class PackagesController < ApplicationController
   before_action :set_package, only: [:show, :edit, :update, :destroy]
-
+  layout 'console'
   # GET /packages
   # GET /packages.json
   def index
@@ -25,9 +25,10 @@ class PackagesController < ApplicationController
   # POST /packages.json
   def create
     @package = Package.new(package_params)
-
+    
     respond_to do |format|
       if @package.save
+        @package.generate_barcode
         format.html { redirect_to @package, notice: 'Package was successfully created.' }
         format.json { render action: 'show', status: :created, location: @package }
       else
@@ -69,6 +70,6 @@ class PackagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def package_params
-      params.require(:package).permit(:user_id, :locker_id, :size)
+      params.require(:package).permit(:user_id, :locker_id, :status, :size)
     end
 end

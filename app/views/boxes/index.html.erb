@@ -20,9 +20,9 @@
         <td><%= box.branch.name %></td>
         <td><%= box.locker.name %></td>
         <td><%= box.name %></td>
-        <td><%= box.size %></td>
-        <td><%= box.status %></td>
-        <td><%= link_to 'Show', box %></td>
+        <td><%= box.print_size %></td>
+        <td><%= box.print_status %></td>
+        <td><%= link_to 'Manage', box %></td>
         <td><%= link_to 'Edit', edit_box_path(box) %></td>
         <td><%= link_to 'Destroy', box, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

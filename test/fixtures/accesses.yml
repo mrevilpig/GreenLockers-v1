@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  box_id: 1
+  barcode: MyString
+  pin: MyString
+  update_request_id: MyString
+
+two:
+  box_id: 1
+  barcode: MyString
+  pin: MyString
+  update_request_id: MyString

@@ -3,9 +3,11 @@
 <table>
   <thead>
     <tr>
+      <th>Barcode</th>
       <th>User</th>
-      <th>Locker</th>
+      <th>Box</th>
       <th>Size</th>
+      <th>Status</th>
       <th></th>
       <th></th>
       <th></th>
@@ -15,9 +17,15 @@
   <tbody>
     <% @packages.each do |package| %>
       <tr>
-        <td><%= package.user_id %></td>
-        <td><%= package.locker_id %></td>
-        <td><%= package.size %></td>
+      	<td><%= package.barcode %></td>
+        <td><%= package.user.user_name %></td>
+        <td>
+        	<% if package.box %>
+        	  <%= package.box.branch.name %>_<%= package.package.name %>_<%= package.box.name %>
+        	<% end %>
+        </td>
+        <td><%= package.print_size %></td>
+        <td><%= package.print_status %></td>
         <td><%= link_to 'Show', package %></td>
         <td><%= link_to 'Edit', edit_package_path(package) %></td>
         <td><%= link_to 'Destroy', package, method: :delete, data: { confirm: 'Are you sure?' } %></td>

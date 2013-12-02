@@ -13,16 +13,25 @@
 
   <div class="field">
     <%= f.label :user_id %><br>
-    <%= f.number_field :user_id %>
-  </div>
-  <div class="field">
-    <%= f.label :locker_id %><br>
-    <%= f.number_field :locker_id %>
+    <%= f.collection_select :user_id, User.order(:last_name),:id,:user_name, include_blank: true %>
   </div>
   <div class="field">
     <%= f.label :size %><br>
     <%= f.number_field :size %>
   </div>
+  <% if @package.id %>
+  <div class="field">
+    <%= f.label :status, 'Type' %><br>
+    <%= f.select :status, {'New Delivery'=>0, 'New Drop off'=>5}, include_blank: false %>
+  </div>
+  <% elsif @package.status == 2 %>
+  <div class="field">
+    <%= f.label :status, 'Type' %><br>
+    <%= f.select :status, {'Delivered'=>2, 'New Drop off'=>5}, include_blank: false %>
+  </div>
+  <% else %>
+  Status: <%= package.print_status %>
+  <% end %>
   <div class="actions">
     <%= f.submit %>
   </div>
