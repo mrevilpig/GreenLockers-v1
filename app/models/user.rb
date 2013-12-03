@@ -15,4 +15,8 @@ class User < ActiveRecord::Base
     
   end
   
+  def send_dropped_off_notification
+    
+  end
+  
 end

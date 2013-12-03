@@ -59,6 +59,21 @@
   	<% end %>
   <% end %>
   
+  <% if @box.print_status == 'Returning' %>
+    <%= form_tag("dropped_off", method: "post") do %>
+      <%= submit_tag 'Dropped off' %>
+      <%= hidden_field_tag :id, @box.id %>
+    <% end %>
+  <% end %>
+  
+  <% if @box.print_status == 'Returned' %>
+  	<%= form_tag("received", method: "post") do %>
+  	  <%= submit_tag 'Received'%>
+  	  <%= hidden_field_tag :id, @box.id %>
+  	<% end %>
+  <% end %>
+  
+  
 </p>
 
 <p>

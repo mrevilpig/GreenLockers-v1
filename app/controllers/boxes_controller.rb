@@ -1,5 +1,5 @@
 class BoxesController < ApplicationController
-  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :delivered, :picked_up]
+  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :delivered, :picked_up, :dropped_off, :received]
   layout 'console'
   # GET /lockers
   # GET /lockers.json
@@ -59,8 +59,14 @@ class BoxesController < ApplicationController
   
   def assign
     respond_to do |format|
-      if @box.deliver_package params[:package_id]
-        format.html { redirect_to @box, notice: 'Package successfully assigned.' }
+      package = Package.find params[:package_id]
+      if package.nil?
+        format.html { redirect_to @box, notice: 'Package assign error.' }
+        return
+      end
+      bool = (package.status == 5) ? (@box.drop_off_package params[:package_id]) : (@box.deliver_package params[:package_id])
+      if bool
+        format.html { redirect_to @box, notice: 'Package was successfully assigned.' }
       else
         format.html { redirect_to @box, notice: 'Package assign error.' }
       end
@@ -70,7 +76,7 @@ class BoxesController < ApplicationController
   def delivered
     respond_to do |format|
       if @box.package_delivered
-        format.html { redirect_to @box, notice: 'Package successfully delivered.' }
+        format.html { redirect_to @box, notice: 'Package was successfully delivered.' }
       else
         format.html { redirect_to @box, notice: 'Package deliver error.' }
       end
@@ -80,9 +86,29 @@ class BoxesController < ApplicationController
   def picked_up
     respond_to do |format|
       if @box.package_picked_up
-        format.html { redirect_to @box, notice: 'Package successfully picked up.' }
+        format.html { redirect_to @box, notice: 'Package was successfully picked up.' }
       else
         format.html { redirect_to @box, notice: 'Package pick up error.' }
+      end
+    end
+  end
+  
+  def dropped_off
+    respond_to do |format|
+      if @box.package_dropped_off
+        format.html { redirect_to @box, notice: 'Package was successfully dropped off.' }
+      else
+        format.html { redirect_to @box, notice: 'Package drop off error.' }
+      end
+    end
+  end
+  
+  def received
+    respond_to do |format|
+      if @box.drop_off_package_received
+        format.html { redirect_to @box, notice: 'DropOff package was successfully received.' }
+      else
+        format.html { redirect_to @box, notice: 'DropOff package was not received.' }
       end
     end
   end

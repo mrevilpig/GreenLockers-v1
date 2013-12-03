@@ -9,6 +9,8 @@ GreenLockers::Application.routes.draw do
   post "boxes/assign"
   post "boxes/delivered"
   post "boxes/picked_up"
+  post "boxes/dropped_off"
+  post "boxes/received"
   
   resources :lockers
 
