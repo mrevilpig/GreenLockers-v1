@@ -1,0 +1,40 @@
+<style>
+.logging{ text-align: center }
+.loggingNormal{ color: green; }
+.loggingWeird { color: orange; }
+.loggingError { color: red; }
+.loggingFix { color: blue; }
+</style>
+
+<h1>Logs</h1>
+
+<table class='logging'>
+  <thead>
+    <tr>
+      <th>Box</th>
+      <th>Timestamps</th>
+      <th>Occupation</th>
+      <th>Opened by</th>
+      <th>Employee (if applicable)</th>
+      <th>Action Type</th>
+
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @loggings.each do |l| %>
+      <tr class='logging<%= l.show_action_type %>'>
+        <td><%= l.box.branch.name if l.box %> <%= l.box.locker.name if l.box %> <%= l.box.name if l.box %></td>
+        <td><%= l.open_time %> ~> <%= l.close_time %></td>
+        <td><%= l.occupied_when_open %> ~> <%= l.occupied_when_close %></td>
+        <td><%= l.show_open_method %>
+        <td><%= l.employee.name if l.employee%></td>
+        <td><%= l.show_action_type %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Box', new_box_path %>

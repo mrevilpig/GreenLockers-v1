@@ -30,7 +30,8 @@
     <%= f.select :status, {'Delivered'=>2, 'New Drop off'=>5}, include_blank: false %>
   </div>
   <% else %>
-  Status: <%= package.print_status %>
+    <%= f.label :status, 'Type' %><br>
+    <%= f.select :status, {'New Delivery'=>0, 'New Drop off'=>5}, include_blank: false %>
   <% end %>
   <div class="actions">
     <%= f.submit %>

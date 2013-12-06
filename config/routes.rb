@@ -1,7 +1,8 @@
 GreenLockers::Application.routes.draw do
+  get "logging/index"
   root :to => "pages#index"
   get "console" => "pages#console"
-  post "api/DoorOpened"
+  post "api/DoorOpened" => "api#DoorOpened"
   post "api/DropOff"
   post "api/UpdateAccessInfo"
   post "api/UpdatePermission"
@@ -25,6 +26,8 @@ GreenLockers::Application.routes.draw do
   resources :boxes
 
   resources :users
+  
+  get "logs" => "loggings#index"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

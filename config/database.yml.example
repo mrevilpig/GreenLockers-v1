@@ -5,9 +5,9 @@
 #   gem 'sqlite3'
 development:
   adapter: mysql
-  database: YOURDB
-  username: YOURUSERNAME
-  password: YOURPASSWORD
+  database: greenlockers
+  username: root
+  password: 
   host: 127.0.0.1
   port: 3306
 

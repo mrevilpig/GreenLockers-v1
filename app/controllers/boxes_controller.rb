@@ -40,7 +40,7 @@ class BoxesController < ApplicationController
   # PATCH/PUT /lockers/1.json
   def update
     respond_to do |format|
-      if @box.update(locker_params)
+      if @box.update(box_params)
         format.html { redirect_to @box, notice: 'Locker was successfully updated.' }
       else
         format.html { render action: 'edit' }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131202005515) do
+ActiveRecord::Schema.define(version: 20131206193030) do
 
   create_table "accesses", force: true do |t|
     t.integer  "box_id"
@@ -76,11 +76,11 @@ ActiveRecord::Schema.define(version: 20131202005515) do
     t.datetime "close_time"
     t.integer  "occupied_when_open",  limit: 1
     t.integer  "occupied_when_close", limit: 1
-    t.integer  "type",                limit: 1
+    t.integer  "log_type"
     t.integer  "box_id"
     t.integer  "employee_id"
     t.integer  "box_status"
-    t.integer  "action_type",         limit: 1
+    t.integer  "action_type"
   end
 
   add_index "loggings", ["box_id"], name: "index_loggings_on_box_id", using: :btree
