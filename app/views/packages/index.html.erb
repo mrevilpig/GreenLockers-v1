@@ -9,7 +9,7 @@
   <% @selected_packages = @packages.select{|p| p.status=='0' or p.status=='5' } %>
   <%= render 'tablecontent' %>
   
-  <thead><tr><th colspan='8'><h5>Packages Being Processed (<%= @selected_packages.size %>)</h5></th></tr></thead>
+  <thead><tr><th colspan='8'><h5>Packages Being Processed (<%= @packages.select{|p| p.status=='1' or p.status=='3' or p.status=='6'}.size %>)</h5></th></tr></thead>
   <% @selected_packages = @packages.select{|p| p.status=='1' or p.status=='3' or p.status=='6' } %>
   <%= render 'tablecontent' %>
 
