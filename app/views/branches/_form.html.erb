@@ -10,32 +10,38 @@
       </ul>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
+  <div class='row'>
+    <div class='col-md-4'>
+	  <div class="field">
+	    <%= f.label :name %><br>
+	    <%= f.text_field :name , {:class=>'form-control'} %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :st_address %><br>
+	    <%= f.text_field :st_address , {:class=>'form-control'} %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :apt_address %><br>
+	    <%= f.text_field :apt_address , {:class=>'form-control'} %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :city %><br>
+	    <%= f.text_field :city , {:class=>'form-control'} %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :state_id %><br>
+	    <%= f.collection_select :state_id, State.order(:id),:id,:name ,{:include_blank => 'Select State'}, {:class=>'form-control'} %>
+	  </div>
+	  <div class="field">
+	    <%= f.label :zip %><br>
+	    <%= f.text_field :zip , {:class=>'form-control'} %>
+	  </div>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :st_address %><br>
-    <%= f.text_field :st_address %>
-  </div>
-  <div class="field">
-    <%= f.label :apt_address %><br>
-    <%= f.text_field :apt_address %>
-  </div>
-  <div class="field">
-    <%= f.label :city %><br>
-    <%= f.text_field :city %>
-  </div>
-  <div class="field">
-    <%= f.label :state_id %><br>
-    <%= f.number_field :state_id %>
-  </div>
-  <div class="field">
-    <%= f.label :zip %><br>
-    <%= f.text_field :zip %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
+  <div class='row'>
+  	<div class='col-md-12'>
+  	<%= link_to 'Back', branches_path, :class=>"btn btn-default" %>
+    <%= f.submit  :class=>'btn btn-primary' %>
+    </div>
   </div>
 <% end %>

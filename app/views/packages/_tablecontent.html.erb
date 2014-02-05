@@ -1,0 +1,45 @@
+
+<thead>
+    <tr>
+      <th>Barcode</th>
+      <th>User</th>
+      <th>Box</th>
+      <th>Size</th>
+      <th>Ship to Branch</th>
+      <th>Status</th>
+      <th></th>
+    </tr>
+</thead>
+
+<tbody>
+  	
+
+  <% @selected_packages.each do |package| %>
+  <tr>
+	<td><%= package.barcode %></td>
+	<td><%= package.user.user_name %></td>
+	<td>
+		<% if package.box %>
+		  <%= package.box.locker.name %>_<%= package.box.name %>
+		<% elsif package.backup_box %>
+		  * <%= package.backup_box.locker.name %>_<%= package.backup_box.name %>
+		<% elsif package.status == '0' or package.status == '5' %>
+		  <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-paperclip') + ' Assign',  '', "data-toggle"=>"modal", "data-target"=>'#myModal-assign', "package-id"=>package.id.to_s, :class => 'btn btn-default btn-xs modal-assign-trigger' %>
+		<% end %>
+	</td>
+	<td><%= package.print_size %></td>
+	<td><% if package.preferred_branch %> 
+		  <%= package.preferred_branch.full_name %>
+		<% elsif package.user.preferred_branch %>
+		  <%= package.user.preferred_branch.full_name %>
+		<% end %>
+	</td>
+	<td><%= package.print_status %></td>
+	<td>
+	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-search') +' Info', package, :class => 'btn btn-default btn-xs' %> 
+	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-pencil') +' Edit', edit_package_path(package), :class => 'btn btn-default btn-xs edit-package' %> 
+	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-trash') +' Delete', package, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-default btn-xs' %>
+	</td>
+  </tr>
+  <% end %>
+ </tbody>

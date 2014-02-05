@@ -1,6 +1,6 @@
 <h1>Listing users</h1>
 
-<table>
+<table class='table'>
   <thead>
     <tr>
       <th>First name</th>
@@ -34,9 +34,9 @@
         <td><%= user.st_address %></td>
         <td><%= user.apt_address %></td>
         <td><%= user.city %></td>
-        <td><%= user.state_id %></td>
+        <td><%= user.state.abbr %></td>
         <td><%= user.zip %></td>
-        <td><%= user.preferred_branch_id %></td>
+        <td><%= user.preferred_branch.full_name if user.preferred_branch %></td>
         <td><%= user.user_name %></td>
         <td><%= link_to 'Show', user %></td>
         <td><%= link_to 'Edit', edit_user_path(user) %></td>

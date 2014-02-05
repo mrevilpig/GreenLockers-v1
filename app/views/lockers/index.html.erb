@@ -1,6 +1,6 @@
-<h1>Listing lockers</h1>
+<h4>Lockers</h4>
 
-<table>
+<table class='table table-hover'>
   <thead>
     <tr>
       <th>Branch</th>
@@ -16,7 +16,7 @@
       <tr>
         <td><%= locker.branch.name %></td>
         <td><%= locker.name %></td>
-        <td><%= link_to 'Show', locker %></td>
+        <td><%= link_to 'Manage Boxes', locker %></td>
         <td><%= link_to 'Edit', edit_locker_path(locker) %></td>
         <td><%= link_to 'Destroy', locker, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

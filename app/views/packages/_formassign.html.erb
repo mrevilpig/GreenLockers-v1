@@ -1,0 +1,35 @@
+<%= form_tag("/boxes/assign", { :method => "post", :id => 'assign_box_form'}) do %>
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h4 class="modal-title" id="myModalLabel">Assign Package</h4>
+  </div>
+  <div class="modal-body">
+	<h5>Box Selected:</h5> <input type="text" class='form-control' id='box-info' placeholder="None" disabled>
+	<input type="hidden" class='form-control' id='box-id' name="id">
+	<input type="hidden" class='form-control' id='box-id-origin' name="origin_box_id">
+	<input type="hidden" class='form-control' id='package-id' name="package_id">
+	<br/>
+	<h5>Options Available:</h5>
+	<div class="tablescroll">
+		<table class='table table-center'>
+		  <thead class='scroll'>
+		  	<tr>
+		  	  <th>Box</th>
+		      <th>Locker</th>
+			  <th>Branch</th>
+			  <th>Size</th>
+		      <th></th>
+		    </tr>
+		  </thead>
+		  <tbody class='scroll'>
+	  	    
+		  </tbody>
+		</table>
+	</div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" id="close-button" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary" id="assign-button" disabled>Assign</button>
+  </div>
+			
+<% end %>

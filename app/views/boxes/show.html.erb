@@ -82,6 +82,24 @@
   Barcode: <%= @box.access.barcode if @box.access %>
 </p>
 
+<% if @box.print_status == 'Returned' %>
+  <p>
+    <strong>Backup Package for Delivery:</strong><br/>
+    <% if @selected_backup_package %>
+      Current Backed up Package: 
+      <%= @selected_backup_package.barcode %>
+    <% end %>
+    <%= form_tag("assign_backup", method: "post") do %>
+  	  <%= select '', :package_id, @unassigned_packages_for_delivery.collect{|p|
+	  	  	print_info = p.barcode
+	  	  	[print_info, p.id]
+  	      }, include_blank: true %>
+  	  <%= submit_tag 'Assign Backup' %>
+  	  <%= hidden_field_tag :id, @box.id %>
+  	<% end %>
+  </p>
+<% end %>
+
 <p>
   <strong>Permission:</strong>
   Employees: 
@@ -95,7 +113,7 @@
 
 
 <%= link_to 'Edit', edit_box_path(@box) %> |
-<%= link_to 'Back', boxes_path %>
+<%= link_to 'Back', locker_path(@box.locker) %>
 
 
 

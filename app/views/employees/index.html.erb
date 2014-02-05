@@ -1,6 +1,8 @@
-<h1>Listing employees</h1>
+<h4>Employees</h4>
 
-<table>
+<%= link_to '+ New Employee', new_employee_path %>
+
+<table class='table table-hover'>
   <thead>
     <tr>
       <th>First name</th>
@@ -28,7 +30,7 @@
         <td><%= employee.user_name %></td>
         <td><%= employee.role %></td>
         <td><%= employee.password %></td>
-        <td><%= link_to 'Show', employee %></td>
+        <td><%= link_to 'Manage Permissions', employee %></td>
         <td><%= link_to 'Edit', edit_employee_path(employee) %></td>
         <td><%= link_to 'Destroy', employee, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
@@ -38,4 +40,3 @@
 
 <br>
 
-<%= link_to 'New Employee', new_employee_path %>

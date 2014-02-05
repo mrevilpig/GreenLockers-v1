@@ -1,15 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>GreenLockers</title>
+  <title>ZooU Console</title>
   <%= javascript_include_tag "application" %>
   <%= stylesheet_link_tag    "style.css" %>
-  <%= javascript_include_tag "main.js" %>
+  <%= stylesheet_link_tag    "css/bootstrap.css" %>
+
+
   <%= csrf_meta_tags %>
 </head>
+
 <body>
+	<div id='header' class='container-fluid'>
+		<div class='row'>
+			<div class='col-lg-12'>
+				<h1>ZooU Console</h1>
+			</div>
+		</div>
+		<div class='row'>
+			<div class='col-sm-2'><%= link_to 'Users', users_path %></div>
+			<div class='col-sm-2'><%= link_to 'Packages', packages_path %></div>
+			<div class='col-sm-2'><%= link_to 'Staff', employees_path %></div>
+			<div class='col-sm-2'><%= link_to 'Branches', branches_path %></div>
+			<div class='col-sm-2'><%= link_to 'Lockers', lockers_path %></div>
+			<div class='col-sm-2'><%= link_to 'Logs', logs_path %></div>
+		</div>
+	</div>
+	<div id='content' class='container-fluid'>
+	
+	<div class="alert alert-success alert-dismissable notice-div">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	  <p><%= notice %></p>
+	</div>
+	
+	<div class="alert alert-danger alert-dismissable alert-div">
+	  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	  <p><%= alert %></p>
+	</div>
 
-<%= yield %>
-
+		
+	<%= yield %>
+	</div>
+	<div id='footer' class='container-fluid'>
+		<div class='row'>
+			<div class='col-lg-12'>
+				<p>ZooU Console</p>
+			</div>
+		</div>
+	</div>
+	
+	<%= javascript_include_tag "bootstrap.js" %>
+	<%= javascript_include_tag "http://code.jquery.com/jquery-1.10.2.min.js" %>
+	<%= javascript_include_tag "main.js" %>
 </body>
 </html>

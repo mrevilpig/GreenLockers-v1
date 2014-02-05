@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_many :packages
-  has_many :permissions
-  belongs_to :preferred_branch
+  belongs_to :preferred_branch, :class_name => 'Branch'
+  belongs_to :state
   
   def send_pick_up_pin pin
     

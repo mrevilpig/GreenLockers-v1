@@ -1,6 +1,8 @@
 class Package < ActiveRecord::Base
   belongs_to :user
   belongs_to :box
+  belongs_to :backup_box, :class_name => 'Box'
+  belongs_to :preferred_branch, :class_name => 'Branch'
   
   def generate_barcode
     barcode = 1000000000 + self.id
@@ -30,6 +32,8 @@ class Package < ActiveRecord::Base
       return "Delivery - En Route" 
     when 2
       return "Delivery - Done"
+    when 3
+      return "Delivery - Queuing"
     when 5
       return "DropOff - New"
     when 6

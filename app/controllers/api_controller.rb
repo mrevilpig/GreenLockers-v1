@@ -22,18 +22,17 @@ class ApiController < ApplicationController
     occupied_when_open = params[:occupied_when_open]
     occupied_when_close = params[:occupied_when_close]
     
-    constant = YAML.load_file("config/constant.yml")
     #check if the status is error:
-    if @box.status == constant['BOX_ERROR'] && !occupied_when_close && params[:type] == constant['DOOR_OPENED_BY_STAFF']
+    if @box.status == @constant['BOX_ERROR'] && !occupied_when_close && params[:type] == @constant['DOOR_OPENED_BY_STAFF']
       # if emptied by staff, reset it to IDLE
-      @box.status = constant['BOX_IDLE']
+      @box.status = @constant['BOX_IDLE']
       if box.save
-        Logging.log_action( params, @box, constant['ACTION_FIX'] )
+        Logging.log_action( params, @box, @constant['ACTION_FIX'] )
       end
       render action: 'DoorOpened', status: :success, location: @api
       return true
-    elsif @box.status == constant['BOX_ERROR']
-      Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+    elsif @box.status == @constant['BOX_ERROR']
+      Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
       @message = 'Box error'
       render action: 'error', status: :error, location: @api
       return false
@@ -42,86 +41,86 @@ class ApiController < ApplicationController
     if occupied_when_open && occupied_when_close 
     # check the status change and deal with the change
       #log weird behavior
-      Logging.log_action( params, @box, constant['ACTION_WEIRD'] )
+      Logging.log_action( params, @box, @constant['ACTION_WEIRD'] )
       
     elsif !occupied_when_open && !occupied_when_close
       #log weird behavior
-      Logging.log_action( params, @box, constant['ACTION_WEIRD'] )
+      Logging.log_action( params, @box, @constant['ACTION_WEIRD'] )
       
     elsif !occupied_when_open && occupied_when_close
       #item put
-      if @box.status == constant['BOX_DELIVERING']
+      if @box.status == @constant['BOX_DELIVERING']
         # if the box is assigned and waiting for delivery
-        if params[:type] == constant['DOOR_OPENED_BY_PIN']
-          @box.status = constant['BOX_ERROR']
+        if params[:type] == @constant['DOOR_OPENED_BY_PIN']
+          @box.status = @constant['BOX_ERROR']
           # log error behavior
           if @box.save
-            Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+            Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
           end
           @message = 'Invalid Action'
         elsif @box.package_delivered
-        #@box.status = constant['BOX_DELIVERED']
+        #@box.status = @constant['BOX_DELIVERED']
           # log box delivered (type, staff_id), generate PIN and send to user
-          Logging.log_action( params, @box, constant['ACTION_NORMAL'] )
+          Logging.log_action( params, @box, @constant['ACTION_NORMAL'] )
         end
-      elsif @box.status == constant['BOX_RETURNING']
+      elsif @box.status == @constant['BOX_RETURNING']
         # if the box is assigned for dropoff and waiting for return
-        if params[:type] != constant['DOOR_OPENED_BY_PIN']
-          @box.status = constant['BOX_ERROR']
+        if params[:type] != @constant['DOOR_OPENED_BY_PIN']
+          @box.status = @constant['BOX_ERROR']
           # log error behavior
           if @box.save
-            Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+            Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
           end
           @message = 'Invalid Action'
         elsif @box.package_dropped_off
-        #@box.status = constant['BOX_RETURNED']
+        #@box.status = @constant['BOX_RETURNED']
         # log box delivered (type, user_id), assign deliverman to pick up
-          Logging.log_action( params, @box, constant['ACTION_NORMAL'] )
+          Logging.log_action( params, @box, @constant['ACTION_NORMAL'] )
         end
       else
         # if status doesn't match
-        @box.status = constant['BOX_ERROR']
+        @box.status = @constant['BOX_ERROR']
         # log error behavior
-        Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+        Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
         return true
       end
       
     else
       #item taken
-      if @box.status == constant['BOX_DELIVERED']
+      if @box.status == @constant['BOX_DELIVERED']
         # if the item is delivered, waiting for user to pickup
-        if params[:type] != constant['DOOR_OPENED_BY_PIN']
-          @box.status = constant['BOX_ERROR']
+        if params[:type] != @constant['DOOR_OPENED_BY_PIN']
+          @box.status = @constant['BOX_ERROR']
           # log error behavior
           if @box.save
-            Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+            Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
           end
           @message = 'Invalid Action'
         elsif @box.package_picked_up
-        #@box.status = constant['BOX_IDLE']
+        #@box.status = @constant['BOX_IDLE']
         # log item taken by user (type, user_id)
-          Logging.log_action( params, @box, constant['ACTION_NORMAL'] )
+          Logging.log_action( params, @box, @constant['ACTION_NORMAL'] )
         end
-      elsif @box.status == constant['BOX_RETURNED']
+      elsif @box.status == @constant['BOX_RETURNED']
         # if the item is droped off, waiting for deliverman to pickup
-        if params[:type] == constant['DOOR_OPENED_BY_PIN']
-          @box.status = constant['BOX_ERROR']
+        if params[:type] == @constant['DOOR_OPENED_BY_PIN']
+          @box.status = @constant['BOX_ERROR']
           # log error behavior
           if @box.save
-            Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+            Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
           end
           @message = 'Invalid Action'
         elsif @box.drop_off_package_received
-        #@box.status = constant['BOX_IDLE']
+        #@box.status = @constant['BOX_IDLE']
         # log item taken by deliverman (type, staff_id)
-          Logging.log_action( params, @box, constant['ACTION_NORMAL'] )
+          Logging.log_action( params, @box, @constant['ACTION_NORMAL'] )
         end
       else
         # if status doesn't match
-        @box.status = constant['BOX_ERROR']
+        @box.status = @constant['BOX_ERROR']
         # log error behavior
         if @box.save
-          Logging.log_action( params, @box, constant['ACTION_ERROR'] )
+          Logging.log_action( params, @box, @constant['ACTION_ERROR'] )
         end
         @message = 'Invalid Action'
       end
@@ -145,6 +144,7 @@ class ApiController < ApplicationController
   def UpdateAccessInfo
     locker = Locker.find_by_name(params[:device_id])
     @accesses = Access.where('box_id in (?) and update_request_id = ?', locker.boxes.collect{|b| b.id}, params[:request_id])
+    logger.info @accesses
     locker.access_request_id = params[:request_id]
     locker.save!
   end

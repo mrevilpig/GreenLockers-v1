@@ -1,0 +1,73 @@
+html{
+	height:100%;
+}
+body{
+	min-height:100%;
+	position:relative;
+}
+#header{
+	background-color: #edf4f8;
+	padding-bottom:10px;
+}
+#content{
+	margin: 20px 0;
+	padding-bottom:50px;
+}
+#footer{
+	position:absolute;
+	bottom:0px;
+}
+.table-center td, .table-center th{
+	text-align: center;
+}
+tr.green td{
+	color: #468847;
+	background-color: #dff0d8!important;
+}
+tr.red td{
+	color: #a94442;
+	background-color: #f2dede!important;
+}
+div.tablescroll, div.tablescroll{
+	height:300px;
+	overflow-y: scroll;
+}
+tr.selected td{
+	background-color: #428bca;
+	color: #fff;
+}
+tr.selected:hover td{
+	background-color: #428bca;
+	color: #fff;
+}
+td.cell-for-button{
+	width:90px;
+}
+span.assign, span.backup-assign, span.cancel, span.backup-cancel{
+	height:20px;
+	display:none;
+}
+tr.row-for-package:hover span.assign,
+tr.row-for-backup-package:hover span.backup-assign,
+tr.row-for-box:hover span.assign
+{
+	display:block;
+}
+span.cancel, span.backup-cancel{
+	display:none;
+}
+tr.selected:hover span.assign,
+tr.selected:hover span.backup-assign
+{
+	display:none;
+}
+tr.selected:hover span.cancel,
+tr.selected:hover span.backup-cancel{
+	display:block;
+}
+.notice-div, .alert-div{
+	display:none;
+}
+.field{
+	margin-bottom:10px;
+}

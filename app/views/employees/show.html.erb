@@ -40,5 +40,17 @@
   <%= @employee.password %>
 </p>
 
+<p>
+  <strong>Package:</strong>
+  	<%= form_tag("set_permissions", method: "post") do %>
+  	  <%= select '', :boxes, @boxes.collect{|b|
+	  	  	print_info = b.branch.name + '_' + b.locker.name + '_' + b.name
+	  	  	[print_info, b.id]
+  	      }, {:include_blank => false} , {:multiple => true, :size => 30} %><br />
+  	  <%= submit_tag 'Set Permissions' %>
+  	  <%= hidden_field_tag :id, @employee.id %>
+  	<% end %> 
+</p>
+
 <%= link_to 'Edit', edit_employee_path(@employee) %> |
 <%= link_to 'Back', employees_path %>

@@ -5,6 +5,7 @@ class Box < ActiveRecord::Base
   has_many :loggings
   has_many :permissions
   has_one :package
+  has_one :backup_package, :foreign_key => 'backup_box_id', :class_name => 'Package'
   has_one :access
   delegate :branch, :to => :locker
   CONSTANT = YAML.load_file("config/constant.yml")
@@ -86,7 +87,7 @@ class Box < ActiveRecord::Base
     self.package.user.send_dropped_off_notification
     if self.save
       if self.access.clear
-        
+        #enable backup capacity
         #assign_employee to pick up
         return true
       end
@@ -102,8 +103,39 @@ class Box < ActiveRecord::Base
     self.package = nil
     if self.save
       if self.access.clear
+        backup_package = self.backup_package
+        if backup_package
+          backup_package.status = CONSTANT['PACKAGE_WAITING_FOR_DELIVERY']
+          self.backup_package = nil
+          self.save!
+          backup_package.save!
+          deliver_package backup_package.id
+        end
         return true
       end
+    end
+    return false
+  end
+  
+  # assign backup package for delivery right after dropoff is picked up
+  def assign_backup_package package_id
+    return false if self.status != CONSTANT['BOX_RETURNED']
+    #package.backup_box_id = self.id
+    current = self.backup_package
+    if current
+      current.status = CONSTANT['PACKAGE_WAITING_FOR_DELIVERY']
+      self.backup_package = nil
+      self.save!
+      package.save!
+    end 
+    return true if package_id.nil?
+    package = Package.find package_id
+    return false if package.nil?
+    return false if package.status != CONSTANT['PACKAGE_WAITING_FOR_DELIVERY']
+    self.backup_package = package
+    package.status = CONSTANT['PACKAGE_QUEUING_DELIVERY']
+    if package.save and self.save
+        return true
     end
     return false
   end

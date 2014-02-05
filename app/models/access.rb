@@ -8,6 +8,7 @@ class Access < ActiveRecord::Base
     pin = rand.rand(999999).to_s 
     self.barcode = nil
     self.pin = Digest::SHA1.hexdigest pin
+    self.update_request_id = self.box.locker.access_request_id + 1
     if self.save
       return pin
     end
@@ -17,6 +18,7 @@ class Access < ActiveRecord::Base
   def save_barcode barcode
     self.barcode = Digest::SHA1.hexdigest barcode
     self.pin = nil
+    self.update_request_id = self.box.locker.access_request_id + 1
     if self.save
       return true
     end
@@ -26,6 +28,7 @@ class Access < ActiveRecord::Base
   def clear
     self.barcode = nil
     self.pin = nil
+    self.update_request_id = self.box.locker.access_request_id + 1
     if self.save
       return true
     end

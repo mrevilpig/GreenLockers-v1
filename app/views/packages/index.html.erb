@@ -1,39 +1,37 @@
-<h1>Listing packages</h1>
 
-<table>
-  <thead>
-    <tr>
-      <th>Barcode</th>
-      <th>User</th>
-      <th>Box</th>
-      <th>Size</th>
-      <th>Status</th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
+<h4>Packages</h4>
 
-  <tbody>
-    <% @packages.each do |package| %>
-      <tr>
-      	<td><%= package.barcode %></td>
-        <td><%= package.user.user_name %></td>
-        <td>
-        	<% if package.box %>
-        	  <%= package.box.branch.name %>_<%= package.package.name %>_<%= package.box.name %>
-        	<% end %>
-        </td>
-        <td><%= package.print_size %></td>
-        <td><%= package.print_status %></td>
-        <td><%= link_to 'Show', package %></td>
-        <td><%= link_to 'Edit', edit_package_path(package) %></td>
-        <td><%= link_to 'Destroy', package, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
+<%= link_to content_tag( :span, "", :class=>"glyphicon glyphicon-plus") + ' New Package', '', "data-toggle"=>"modal", "data-target"=>'#myModal-new-package'  %>
+
+
+<table class='table table-hover'>
+  <thead><tr><th colspan='8'><h5>Packages to Be Processed (<%= @packages.select{|p| p.status=='0' or p.status=='5' }.size %>)</h5></th></tr></thead>
+  <% @selected_packages = @packages.select{|p| p.status=='0' or p.status=='5' } %>
+  <%= render 'tablecontent' %>
+  
+  <thead><tr><th colspan='8'><h5>Packages Being Processed (<%= @selected_packages.size %>)</h5></th></tr></thead>
+  <% @selected_packages = @packages.select{|p| p.status=='1' or p.status=='3' or p.status=='6' } %>
+  <%= render 'tablecontent' %>
+
+  <thead><tr><th colspan='8'><h5>Packages Already Processed (<%= @packages.select{|p| p.status=='2' or p.status=='7' }.size %>)</h5></th></tr></thead>
+  <% @selected_packages = @packages.select{|p| p.status=='2' or p.status=='7' } %>
+  <%= render 'tablecontent' %>
 </table>
 
 <br>
 
-<%= link_to 'New Package', new_package_path %>
+    <div class="modal fade" id="myModal-new-package" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	    	<%= render 'formnew' %>
+	    </div>
+	  </div>
+	</div>
+
+    <div class="modal fade" id="myModal-assign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <%= render 'formassign' %>
+	    </div>
+	  </div>
+	</div>

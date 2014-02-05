@@ -1,6 +1,8 @@
-<h1>Listing branches</h1>
+<h4>Branches</h4>
 
-<table>
+<%= link_to '+ New Branch', new_branch_path %>
+
+<table class='table table-hover'>
   <thead>
     <tr>
       <th>Name</th>
@@ -22,7 +24,7 @@
         <td><%= branch.st_address %></td>
         <td><%= branch.apt_address %></td>
         <td><%= branch.city %></td>
-        <td><%= branch.state_id %></td>
+        <td><%= branch.state.name %></td>
         <td><%= branch.zip %></td>
         <td><%= link_to 'Show', branch %></td>
         <td><%= link_to 'Edit', edit_branch_path(branch) %></td>
@@ -34,4 +36,3 @@
 
 <br>
 
-<%= link_to 'New Branch', new_branch_path %>

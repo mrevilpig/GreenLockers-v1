@@ -1,17 +1,19 @@
 GreenLockers::Application.routes.draw do
   get "logging/index"
   root :to => "pages#index"
-  get "console" => "pages#console"
   post "api/DoorOpened" => "api#DoorOpened"
   post "api/DropOff"
   post "api/UpdateAccessInfo"
   post "api/UpdatePermission"
   
   post "boxes/assign"
+  post "boxes/assign_backup"
   post "boxes/delivered"
   post "boxes/picked_up"
   post "boxes/dropped_off"
   post "boxes/received"
+  
+  post "employees/set_permissions"
   
   resources :lockers
 
@@ -28,6 +30,7 @@ GreenLockers::Application.routes.draw do
   resources :users
   
   get "logs" => "loggings#index"
+  get "packages/:id/get_available_boxes" => "packages#get_available_boxes"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

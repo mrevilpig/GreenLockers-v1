@@ -1,6 +1,5 @@
 class EmployeesController < ApplicationController
-  before_action :set_employee, only: [:show, :edit, :update, :destroy]
-  layout 'console'
+  before_action :set_employee, only: [:show, :edit, :update, :destroy, :set_permissions]
   # GET /employees
   # GET /employees.json
   def index
@@ -10,6 +9,7 @@ class EmployeesController < ApplicationController
   # GET /employees/1
   # GET /employees/1.json
   def show
+    @boxes = Box.all
   end
 
   # GET /employees/new
@@ -58,6 +58,25 @@ class EmployeesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to employees_url }
       format.json { head :no_content }
+    end
+  end
+  
+  def set_permissions
+    respond_to do |format|
+      @employee.permissions.destroy_all
+      boxes = params[:boxes]
+      boxes.delete_at(0)
+      boxes.each do |b|
+        box = Box.find(b.to_i)
+        logger.info box.locker.name
+        p = Permission.new(employee_id: params[:id].to_i, box_id: b.to_i, update_request_id: (box.locker.permission_request_id + 1))
+        p.save!
+      end
+      #if .package_dropped_off
+      format.html { redirect_to @employee, notice: 'Permissions successfully set.' }
+      #else
+      #  format.html { redirect_to @box, notice: 'Package drop off error.' }
+      #end
     end
   end
 

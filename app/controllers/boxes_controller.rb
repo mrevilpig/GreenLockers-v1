@@ -1,6 +1,5 @@
 class BoxesController < ApplicationController
-  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :delivered, :picked_up, :dropped_off, :received]
-  layout 'console'
+  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :assign_backup, :delivered, :picked_up, :dropped_off, :received]
   # GET /lockers
   # GET /lockers.json
   def index
@@ -11,6 +10,8 @@ class BoxesController < ApplicationController
   # GET /lockers/1.json
   def show
     @unassigned_packages = Package.where("box_id is NULL and (status = 0 OR status = 5)").order('updated_at ASC')
+    @unassigned_packages_for_delivery = @unassigned_packages.select{|p| p.status == '0' }
+    @selected_backup_package = @box.backup_package
   end
 
   # GET /lockers/new
@@ -59,16 +60,32 @@ class BoxesController < ApplicationController
   
   def assign
     respond_to do |format|
-      package = Package.find params[:package_id]
-      if package.nil?
-        format.html { redirect_to @box, notice: 'Package assign error.' }
-        return
-      end
-      bool = (package.status == 5) ? (@box.drop_off_package params[:package_id]) : (@box.deliver_package params[:package_id])
-      if bool
-        format.html { redirect_to @box, notice: 'Package was successfully assigned.' }
+      return false if params[:package_id].nil?
+      if params[:package_id] == ''
+        format.html { redirect_to :back, notice: 'Package assign error. No package selected.' }
       else
-        format.html { redirect_to @box, notice: 'Package assign error.' }
+        package = Package.find params[:package_id]
+        if ( (package.status == 5) ? (@box.drop_off_package params[:package_id]) : (@box.deliver_package params[:package_id]) )
+          format.html { redirect_to :back, notice: 'Package was successfully assigned.' }
+        else
+          format.html { redirect_to :back, notice: 'Package assign error.' }
+        end
+      end
+    end
+  end
+  
+  def assign_backup
+    respond_to do |format|
+      return false if params[:package_id].nil?
+      if params[:package_id] == ''
+        format.html { redirect_to :back, notice: 'Package assign error. No package selected.' }
+      else
+        package = Package.find params[:package_id]
+        if @box.assign_backup_package params[:package_id]
+          format.html { redirect_to :back, notice: 'Package was successfully assigned.' }
+        else
+          format.html { redirect_to :back, notice: 'Package assign error.' }
+        end
       end
     end
   end

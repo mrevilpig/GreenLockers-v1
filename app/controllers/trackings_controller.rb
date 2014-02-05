@@ -1,6 +1,6 @@
 class TrackingsController < ApplicationController
   before_action :set_tracking, only: [:show, :edit, :update, :destroy]
-  layout 'console'
+ 
   # GET /trackings
   # GET /trackings.json
   def index

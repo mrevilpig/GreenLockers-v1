@@ -47,7 +47,7 @@
 
 <p>
   <strong>State:</strong>
-  <%= @user.state_id %>
+  <%= @user.state.name %>
 </p>
 
 <p>
@@ -57,7 +57,7 @@
 
 <p>
   <strong>Preferred branch:</strong>
-  <%= @user.preferred_branch_id %>
+  <%= @user.preferred_branch.full_name if @user.preferred_branch %>
 </p>
 
 <p>

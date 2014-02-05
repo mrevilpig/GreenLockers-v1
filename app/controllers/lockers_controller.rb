@@ -1,6 +1,5 @@
 class LockersController < ApplicationController
   before_action :set_locker, only: [:show, :edit, :update, :destroy, :init_locker]
-  layout 'console'
   # GET /lockers
   # GET /lockers.json
   def index
@@ -9,7 +8,17 @@ class LockersController < ApplicationController
 
   # GET /lockers/1
   # GET /lockers/1.json
-  def show
+  def show 
+      u_packages = Package.where("box_id is NULL and (status = 0 OR status = 5) ").order('updated_at ASC')
+      @unassigned_packages = u_packages.select{ |p| 
+        if p.preferred_branch_id
+          p.preferred_branch_id == @locker.branch_id
+        elsif p.user.preferred_branch_id
+          p.user.preferred_branch_id == @locker.branch_id
+        else
+          true == false
+        end 
+      }
   end
 
   # GET /lockers/new
