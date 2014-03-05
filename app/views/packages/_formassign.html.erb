@@ -1,7 +1,7 @@
 <%= form_tag("/boxes/assign", { :method => "post", :id => 'assign_box_form'}) do %>
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-    <h4 class="modal-title" id="myModalLabel">Assign Package</h4>
+    <h4 class="modal-title" id="myModalLabel-assign">Assign Package</h4>
   </div>
   <div class="modal-body">
 	<h5>Box Selected:</h5> <input type="text" class='form-control' id='box-info' placeholder="None" disabled>
@@ -21,7 +21,7 @@
 		      <th></th>
 		    </tr>
 		  </thead>
-		  <tbody class='scroll'>
+		  <tbody class='scroll body-assign'>
 	  	    
 		  </tbody>
 		</table>

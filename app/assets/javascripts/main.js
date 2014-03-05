@@ -27,3 +27,7 @@ if ( $('.alert-div > p').html() != "" )
 	setTimeout(function(){$('.alert-div').fadeIn();},500);
 	setTimeout(function(){$('.alert-div').fadeOut();}, 4000);
 }
+
+$(function () {
+        $("[rel='tooltip']").tooltip();
+    });

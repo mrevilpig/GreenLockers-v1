@@ -21,10 +21,14 @@
 	<td>
 		<% if package.box %>
 		  <%= package.box.locker.name %>_<%= package.box.name %>
+		  <% if package.status == @constant['PACKAGE_ENROUTE_DELIVERY'] or package.status == @constant['PACKAGE_ENROUTE_DROP_OFF'] %>
+		  	<%= link_to content_tag(:span, '', :class => 'glyphicon glyphicon-paperclip'), "" , "data-toggle"=>"modal", "rel" => "tooltip", "data-placement"=>"top", "title"=>"Reassign", "data-target"=>'#myModal-assign', "package-id"=>package.id.to_s, "barcode"=>package.barcode.to_s, "reassign"=>"true", :class => 'btn btn-default btn-xs modal-assign-trigger' %>
+		  <% end %>
 		<% elsif package.backup_box %>
-		  * <%= package.backup_box.locker.name %>_<%= package.backup_box.name %>
-		<% elsif package.status == '0' or package.status == '5' %>
-		  <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-paperclip') + ' Assign',  '', "data-toggle"=>"modal", "data-target"=>'#myModal-assign', "package-id"=>package.id.to_s, :class => 'btn btn-default btn-xs modal-assign-trigger' %>
+		  * <%= package.backup_box.locker.name %>_<%= package.backup_box.name %> 
+		  <%= link_to content_tag(:span, '', :class => 'glyphicon glyphicon-paperclip'), "" , "data-toggle"=>"modal", "rel" => "tooltip", "data-placement"=>"top", "title"=>"Reassign", "data-target"=>'#myModal-assign', "package-id"=>package.id.to_s, "barcode"=>package.barcode.to_s, "reassign"=>"true", :class => 'btn btn-default btn-xs modal-assign-trigger' %>
+		<% elsif package.status == @constant['PACKAGE_WAITING_FOR_DELIVERY'] or package.status == @constant['PACKAGE_WAITING_FOR_DROP_OFF']  %>
+		  <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-paperclip') + ' Assign',  '', "data-toggle"=>"modal", "data-target"=>'#myModal-assign', "package-id"=>package.id.to_s, "barcode"=>package.barcode.to_s, :class => 'btn btn-default btn-xs modal-assign-trigger' %>
 		<% end %>
 	</td>
 	<td><%= package.print_size %></td>
@@ -37,6 +41,7 @@
 	<td><%= package.print_status %></td>
 	<td>
 	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-search') +' Info', package, :class => 'btn btn-default btn-xs' %> 
+	  <%= link_to content_tag(:span, '', :class => 'glyphicon glyphicon-list-alt') + ' Logs', '', "data-toggle"=>"modal", "data-target"=>'#myModal-logs', "package-id"=>package.id.to_s, :class => 'btn btn-default btn-xs modal-package-logs-trigger' %> 
 	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-pencil') +' Edit', edit_package_path(package), :class => 'btn btn-default btn-xs edit-package' %> 
 	  <%= link_to content_tag(:span, '', :class=>'glyphicon glyphicon-trash') +' Delete', package, method: :delete, data: { confirm: 'Are you sure?' }, :class => 'btn btn-default btn-xs' %>
 	</td>

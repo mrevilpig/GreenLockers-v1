@@ -28,8 +28,20 @@ tr.red td{
 	color: #a94442;
 	background-color: #f2dede!important;
 }
-div.tablescroll, div.tablescroll{
+tr.yellow td{
+	color: #8a6d3b;
+	background-color: #fcf8e3!important;
+}
+tr.blue td{
+	color: #31708f;
+	background-color: #d9edf7!important;
+}
+div.tablescroll{
 	height:300px;
+	overflow-y: scroll;
+}
+div.tablescroll-long{
+	height:500px;
 	overflow-y: scroll;
 }
 tr.selected td{
@@ -71,3 +83,9 @@ tr.selected:hover span.backup-cancel{
 .field{
 	margin-bottom:10px;
 }
+#myModal-logs .modal-dialog
+{
+	width:90%;
+	min-width:1000px;
+}
+} 

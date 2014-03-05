@@ -49,6 +49,7 @@
         </td>
         <td>
 	        <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-wrench') + ' Manage', box, :class => 'btn btn-default btn-xs' %> 
+	        <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-list-alt') + ' Logs', '', "data-toggle"=>"modal", "data-target"=>'#myModal-logs', "box-id"=>box.id.to_s, :class => 'btn btn-default btn-xs modal-box-logs-trigger' %> 
 	        <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-pencil') + ' Edit', edit_box_path(box), :class => 'btn btn-default btn-xs' %> 
 	        <%=link_to content_tag(:span, '', :class => 'glyphicon glyphicon-trash') + ' Delete', box, method: :delete, data: { confirm: 'Are you sure?' } , :class => 'btn btn-default btn-xs' %>
 	    </td>
@@ -60,84 +61,7 @@
 	<div class="modal fade modal-assign" id="myModal-assign" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
-	      <%= form_tag("/boxes/assign", method: "post") do %>
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title" id="myModalLabel">Assign Package</h4>
-		      </div>
-		      <div class="modal-body">
-				<h5>Package Selected:</h5> <input type="text" class='form-control' id='package-info' placeholder="None" disabled>
-				<input type="hidden" class='form-control' id='package-id' name="package_id">
-				<input type="hidden" class='form-control' id='package-id-origin' name="origin_package_id">
-				<input type="hidden" class='form-control' id='box-id' name="id">
-				<br/>
-				<h5>Options Available:</h5>
-				<ul class="nav nav-tabs">
-				  <li class="active"><a href="#delivery" data-toggle="tab">Delivery</a></li>
-				  <li><a href="#dropoff" data-toggle="tab">Drop off</a></li>
-				</ul>
-				<div class="tab-content">
-				  <div class="tab-pane active tablescroll" id="delivery">
-					<table class='table table-center'>
-					  <thead class='scroll'>
-					  	<tr>
-					      <th>Barcode</th>
-	      				  <th>User</th>
-	      				  <th>Size</th>
-	      				  <th>Datetime</th>
-					      <th></th>
-					    </tr>
-					  </thead>
-					  <tbody class='scroll'>
-				  	  <% @unassigned_packages.select{|u| u.status=='0'}.each do |p| %>
-				  	  	<tr class='row-for-package' id='row-for-<%= p.id %>'>
-				  	  	  <td><%= p.barcode %></td>
-				  	  	  <td><%= p.user.user_name %></td>
-				  	  	  <td><%= p.print_size %></td>
-				  	  	  <td><%= p.created_at.to_s %></td>
-				  	  	  <td class='cell-for-button'>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-ok') + ' Assign', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs assign btn-success')%>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-remove') + ' Cancel', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs cancel btn-danger')%>
-				  	  	  </td>
-				  	  	</tr>
-				  	  <% end %>
-					  </tbody>
-					</table>
-				  </div>
-				  <div class="tab-pane tablescroll" id="dropoff">
-					<table class='table table-center'>
-					  <thead class='scroll'>
-					  	<tr>
-					      <th>Barcode</th>
-	      				  <th>User</th>
-	      				  <th>Size</th>
-	      				  <th>Datetime</th>
-					      <th></th>
-					    </tr>
-					  </thead>
-					  <tbody class='scroll'>
-				      <% @unassigned_packages.select{|u| u.status=='5'}.each do |p| %>
-				  	  	<tr class='row-for-package' id='row-for-<%= p.id %>'>
-				  	  	  <td><%= p.barcode %></td>
-				  	  	  <td><%= p.user.user_name %></td>
-				  	  	  <td><%= p.print_size %></td>
-				  	  	  <td><%= p.created_at.to_s %></td>
-				  	  	  <td class='cell-for-button'>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-ok') + ' Assign', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs assign btn-success')%>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-remove') + ' Cancel', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs cancel btn-danger')%>
-				  	  	  </td>
-				  	  	</tr>
-				  	  <% end %>					  	
-					  </tbody>
-					</table>
-				  </div>
-				</div>
-		      </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" id="close-button" data-dismiss="modal">Close</button>
-		        <button type="submit" class="btn btn-primary" id="assign-button" disabled>Assign</button>
-		      </div>
-		  <% end %>
+	      <%= render 'formassign' %>
 	    </div>
 	  </div>
 	</div>
@@ -145,58 +69,18 @@
     <div class="modal fade modal-backup" id="myModal-backup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
-		  <%= form_tag("/boxes/assign_backup", method: "post") do %>
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-		        <h4 class="modal-title" id="myModalLabel">Assign Backup Package</h4>
-		      </div>
-		      <div class="modal-body">
-				<h5>Package Selected:</h5> <input type="text" class='form-control' id='backup-package-info' placeholder="None" disabled>
-				<input type="hidden" class='form-control' id='backup-package-id' name="package_id">
-				<input type="hidden" class='form-control' id='backup-package-id-origin' name="origin_package_id">
-				<input type="hidden" class='form-control' id='backup-box-id' name="id">
-				<br/>
-				<h5>Options Available:</h5>
-		  		<div class="tablescroll">
-					<table class='table table-center'>
-					  <thead class='scroll'>
-					  	<tr>
-					      <th>Barcode</th>
-	      				  <th>User</th>
-	      				  <th>Size</th>
-	      				  <th>Datetime</th>
-					      <th></th>
-					    </tr>
-					  </thead>
-					  <tbody class='scroll'>
-				  	  <% @unassigned_packages.select{|u| u.status=='0'}.each do |p| %>
-				  	  	<tr class='row-for-backup-package' id='row-for-backup-<%= p.id %>'>
-				  	  	  <td><%= p.barcode %></td>
-				  	  	  <td><%= p.user.user_name %></td>
-				  	  	  <td><%= p.print_size %></td>
-				  	  	  <td><%= p.created_at.to_s %></td>
-				  	  	  <td class='cell-for-button'>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-ok') + ' Assign', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs backup-assign btn-success')%>
-				  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-remove') + ' Cancel', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs backup-cancel btn-danger')%>
-				  	  	  </td>
-				  	  	</tr>
-				  	  <% end %>
-					  </tbody>
-					</table>
-				</div>
-			  </div>
-		      <div class="modal-footer">
-		        <button type="button" class="btn btn-default" id="backup-close-button" data-dismiss="modal">Close</button>
-		        <button type="submit" class="btn btn-primary" id="backup-assign-button" disabled>Assign</button>
-		      </div>
-				
-				
-		  <% end %>
+		  <%= render 'formbackup'%>
 	    </div>
 	  </div>
 	</div>
-		  
-
+	
+	<div class="modal fade modal-backup" id="myModal-logs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <%= render 'tablelog' %>
+		</div>
+	  </div>
+	</div>
 <br>
 
 <%= link_to 'New Box', new_box_path %>

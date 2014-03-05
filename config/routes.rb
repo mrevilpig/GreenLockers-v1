@@ -1,13 +1,15 @@
 GreenLockers::Application.routes.draw do
-  get "logging/index"
   root :to => "pages#index"
   post "api/DoorOpened" => "api#DoorOpened"
   post "api/DropOff"
   post "api/UpdateAccessInfo"
   post "api/UpdatePermission"
+  post "api/BarcodeNotExist"
   
   post "boxes/assign"
   post "boxes/assign_backup"
+  post "boxes/reassign"
+  post "boxes/reassign_backup"
   post "boxes/delivered"
   post "boxes/picked_up"
   post "boxes/dropped_off"
@@ -30,6 +32,8 @@ GreenLockers::Application.routes.draw do
   resources :users
   
   get "logs" => "loggings#index"
+  get "logs/box/:id", to: "loggings#box_logs", as: "box_logs"
+  get "logs/package/:id", to: "loggings#package_logs", as: "package_logs"
   get "packages/:id/get_available_boxes" => "packages#get_available_boxes"
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -6,18 +6,17 @@
 .loggingFix { color: blue; }
 </style>
 
-<h4>Box Behavior Logs</h4>
+<h4>Logs</h4>
 
 <table class='logging table table-condensed table-center'>
   <thead>
     <tr>
       <th>Box</th>
-      <th>Timestamps</th>
-      <th>Occupation</th>
-      <th>Opened by</th>
-      <th>Employee (if applicable)</th>
+      <th>Package</th>
+      <th>Time</th>
+      <th>Access</th>
       <th>Action Type</th>
-
+	  <th>Description</th>
     </tr>
   </thead>
 
@@ -25,11 +24,11 @@
     <% @loggings.each do |l| %>
       <tr class='logging<%= l.show_action_type %>'>
         <td><%= l.box.branch.name if l.box %> <%= l.box.locker.name if l.box %> <%= l.box.name if l.box %></td>
-        <td><%= l.open_time %> ~> <%= l.close_time %></td>
-        <td><%= l.occupied_when_open %> ~> <%= l.occupied_when_close %></td>
-        <td><%= l.show_open_method %>
-        <td><%= l.employee.name if l.employee%></td>
+        <td><%= l.package.barcode if l.package %></td>
+        <td><%= l.request_time %></td>
+        <td><%= l.show_access_method %>
         <td><%= l.show_action_type %></td>
+        <td style='text-align:left'><%= l.print_sentence %></td>
       </tr>
     <% end %>
   </tbody>

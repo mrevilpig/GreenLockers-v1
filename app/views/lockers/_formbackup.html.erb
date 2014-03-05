@@ -1,0 +1,47 @@
+  <%= form_tag("/boxes/assign_backup", method: "post") do %>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Assign Backup Package</h4>
+      </div>
+      <div class="modal-body">
+		<h5>Package Selected:</h5> <input type="text" class='form-control' id='backup-package-info' placeholder="None" disabled>
+		<input type="hidden" class='form-control' id='backup-package-id' name="package_id">
+		<input type="hidden" class='form-control' id='backup-package-id-origin' name="origin_package_id">
+		<input type="hidden" class='form-control' id='backup-box-id' name="id">
+		<br/>
+		<h5>Options Available:</h5>
+  		<div class="tablescroll">
+			<table class='table table-center'>
+			  <thead class='scroll'>
+			  	<tr>
+			      <th>Barcode</th>
+  				  <th>User</th>
+  				  <th>Size</th>
+  				  <th>Datetime</th>
+			      <th></th>
+			    </tr>
+			  </thead>
+			  <tbody class='scroll'>
+		  	  <% @unassigned_packages.select{|u| u.status==@constant['PACKAGE_WAITING_FOR_DELIVERY']}.each do |p| %>
+		  	  	<tr class='row-for-backup-package' id='row-for-backup-<%= p.id %>'>
+		  	  	  <td><%= p.barcode %></td>
+		  	  	  <td><%= p.user.user_name %></td>
+		  	  	  <td><%= p.print_size %></td>
+		  	  	  <td><%= p.created_at.to_s %></td>
+		  	  	  <td class='cell-for-button'>
+		  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-ok') + ' Assign', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs backup-assign btn-success')%>
+		  	  	  	<%= content_tag(:span, content_tag(:span, '', :class => 'glyphicon glyphicon-remove') + ' Cancel', :pid => p.id, :pinfo => 'Package: ' + p.barcode + '    User: ' + p.user.user_name + '    Size: ' + p.print_size + '    Status: ' + p.print_status, :class => 'btn btn-default btn-xs backup-cancel btn-danger')%>
+		  	  	  </td>
+		  	  	</tr>
+		  	  <% end %>
+			  </tbody>
+			</table>
+		</div>
+	  </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" id="backup-close-button" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" id="backup-assign-button" disabled>Assign</button>
+      </div>
+		
+		
+  <% end %>

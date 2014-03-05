@@ -9,7 +9,7 @@ class LockersController < ApplicationController
   # GET /lockers/1
   # GET /lockers/1.json
   def show 
-      u_packages = Package.where("box_id is NULL and (status = 0 OR status = 5) ").order('updated_at ASC')
+      u_packages = Package.where("box_id is NULL and (status = 0 OR status = 5) AND status IS NOT NULL").order('updated_at ASC')
       @unassigned_packages = u_packages.select{ |p| 
         if p.preferred_branch_id
           p.preferred_branch_id == @locker.branch_id

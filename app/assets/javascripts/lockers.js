@@ -46,3 +46,40 @@ $('.backup-cancel').click(function(){
 	$('#backup-package-id').val("");
 	$('#backup-package-info').val("");
 });
+
+$('.modal-box-logs-trigger').click(function(){
+	var bid = $(this).attr('box-id');
+	$('#log-box-id').html(bid);
+	$.get( "/logs/box/" + bid + '.json', function( data ) {
+		if (data.status == 'error')
+			return;
+		if (data.status == 'success')
+		{
+			var html = '';
+			var res = data.result;
+			if (res.length == 0)
+			{
+				html += "<tr><td colspan='4' style='text-align:center; font-size:23px; color:#999'>No Logs Found.</th></tr>";
+			}
+		  	for (var i = 0; i < res.length; i++) 
+		  	{
+			  	html += "<tr ";
+			  	if (res[i].action_type == 'Normal' || res[i].action_type == 'Fix')
+			  		html += "class='green'";
+			  	else if (res[i].action_type == 'Abnormal')
+			  		html += "class='yellow'";
+			  	else if (res[i].action_type == 'Error')
+			  		html += "class='red'";
+			  	else if (res[i].action_type == 'Manual')
+			  		html += "class='blue'";
+			  	html += ">";
+			  	html += "<td>" + res[i].sentence + "</td>";
+			  	html += "<td>" + res[i].package_info + "</td>";
+			  	html += "<td>" + res[i].time + "</td>";
+			  	html += "<td>" + res[i].access + "</td>";
+			  	html += "</tr>";
+			}
+			$( "tbody.logs" ).html( html );
+		}
+	});
+});

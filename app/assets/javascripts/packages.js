@@ -1,7 +1,17 @@
 $('.modal-assign-trigger').click(function(){
-	$( "tbody.scroll" ).html( "" );
+	$( "tbody.body-assign" ).html( "" );
 	var package_id = $(this).attr('package-id');
+	var barcode = $(this).attr('barcode');
+	var reassign = $(this).attr('reassign');
+	if ( reassign == 'true' )
+		$('#myModalLabel-assign').html('Reassign Packge '+barcode);
+	else
+		$('#myModalLabel-assign').html('Assign Packge '+barcode);
 	$( "#package-id" ).val( package_id );
+	$('.row-for-box').removeClass('selected');
+	$('#assign-button').attr('disabled', true);
+	$('#box-id').val("");
+	$('#box-info').val("");
 	$.get( "packages/"+package_id + '/get_available_boxes.json', function( data ) {
 	  if ( data.status == 'error' )
 	  	return;
@@ -28,12 +38,14 @@ $('.modal-assign-trigger').click(function(){
 		  		html += " backup='true'";
 		  	else
 		  		html += " backup='false'";
+		    if (reassign == 'true')
+		    	html += " reassign='true'";
 		  	html += '><span class="glyphicon glyphicon-ok"></span> Assign</span>';
 		  	html += '<span class="btn btn-default btn-xs cancel btn-danger" bid="'+res[i].id+'"><span class="glyphicon glyphicon-remove"></span> Cancel</span>'
 		  	html += "</td>";
 		  	html += "</tr>";
 		  }
-		  $( "tbody.scroll" ).html( html );
+		  $( "tbody.body-assign" ).html( html );
 		  
 			$('.assign').click(function(){
 				$('.row-for-box').removeClass('selected');
@@ -43,8 +55,12 @@ $('.modal-assign-trigger').click(function(){
 				$('#assign-button').attr('disabled', false);
 				$('#box-info').val(binfo);
 				$('#box-id').val(bid);
-				if ($(this).attr('backup') == 'true')
+				if ($(this).attr('backup') == 'true' && $(this).attr('reassign') == 'true' )
+					$('form#assign_box_form').attr('action', '/boxes/reassign_backup');
+				else if ( $(this).attr('backup') == 'true' )
 					$('form#assign_box_form').attr('action', '/boxes/assign_backup');
+				else if ( $(this).attr('reassign') == 'true' )
+					$('form#assign_box_form').attr('action', '/boxes/reassign');
 				else
 					$('form#assign_box_form').attr('action', '/boxes/assign');
 			});
@@ -58,6 +74,44 @@ $('.modal-assign-trigger').click(function(){
 			});
 
 	  }
+	});
+});
+
+
+$('.modal-package-logs-trigger').click(function(){
+	var pid = $(this).attr('package-id');
+	$('#log-package-id').html(pid);
+	$.get( "/logs/package/" + pid + '.json', function( data ) {
+		if (data.status == 'error')
+			return;
+		if (data.status == 'success')
+		{
+			var html = '';
+			var res = data.result;
+			if (res.length == 0)
+			{
+				html += "<tr><td colspan='4' style='text-align:center; font-size:23px; color:#999'>No Logs Found.</th></tr>";
+			}
+		  	for (var i = 0; i < res.length; i++) 
+		  	{
+			  	html += "<tr ";
+			  	if (res[i].action_type == 'Normal' || res[i].action_type == 'Fix')
+			  		html += "class='green'";
+			  	else if (res[i].action_type == 'Abnormal')
+			  		html += "class='yellow'";
+			  	else if (res[i].action_type == 'Error')
+			  		html += "class='red'";
+			  	else if (res[i].action_type == 'Manual')
+			  		html += "class='blue'";
+			  	html += ">";
+			  	html += "<td>" + res[i].sentence + "</td>";
+			  	html += "<td>" + res[i].box_info + "</td>";
+			  	html += "<td>" + res[i].time + "</td>";
+			  	html += "<td>" + res[i].access + "</td>";
+			  	html += "</tr>";
+			}
+			$( "tbody.logs" ).html( html );
+		}
 	});
 });
 

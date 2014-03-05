@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140204205817) do
+ActiveRecord::Schema.define(version: 20140210000743) do
 
   create_table "accesses", force: true do |t|
     t.integer  "box_id"
@@ -81,10 +81,15 @@ ActiveRecord::Schema.define(version: 20140204205817) do
     t.integer  "employee_id"
     t.integer  "box_status"
     t.integer  "action_type"
+    t.datetime "request_time"
+    t.integer  "package_id"
+    t.integer  "package_status"
+    t.integer  "syntax_type"
   end
 
   add_index "loggings", ["box_id"], name: "index_loggings_on_box_id", using: :btree
   add_index "loggings", ["employee_id"], name: "index_loggings_on_employee_id", using: :btree
+  add_index "loggings", ["package_id"], name: "index_loggings_on_package_id", using: :btree
 
   create_table "packages", force: true do |t|
     t.integer  "user_id"

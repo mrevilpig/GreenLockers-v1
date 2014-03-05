@@ -32,16 +32,16 @@
 	  <% if @package.id %>
 	  <div class="field">
 	    <%= f.label :status, 'Type' %><br>
-	    <%= f.select :status, {'New Delivery'=>0, 'New Drop off'=>5}, {:include_blank => false},{ :class=>'form-control'} %>
+	    <%= f.select :status, {'New Delivery'=> @constant['PACKAGE_WAITING_FOR_DELIVERY'], 'New Drop off'=>@constant['PACKAGE_WAITING_FOR_DROP_OFF']}, {:include_blank => false},{ :class=>'form-control'} %>
 	  </div>
-	  <% elsif @package.status == 2 %>
+	  <% elsif @package.status == @constant['PACKAGE_DONE_DELIVERY'] %>
 	  <div class="field">
 	    <%= f.label :status, 'Type' %><br>
-	    <%= f.select :status, {'Delivered'=>2, 'New Drop off'=>5}, {:include_blank => false}, { :class=>'form-control'} %>
+	    <%= f.select :status, {'Delivered'=> @constant['PACKAGE_DONE_DELIVERY'], 'New Drop off'=>@constant['PACKAGE_WAITING_FOR_DROP_OFF']}, {:include_blank => false}, { :class=>'form-control'} %>
 	  </div>
 	  <% else %>
 	    <%= f.label :status, 'Type' %><br>
-	    <%= f.select :status, {'New Delivery'=>0, 'New Drop off'=>5}, {:include_blank=> false}, { :class=>'form-control'}  %>
+	    <%= f.select :status, {'New Delivery'=>@constant['PACKAGE_WAITING_FOR_DELIVERY'], 'New Drop off'=>@constant['PACKAGE_WAITING_FOR_DROP_OFF']}, {:include_blank=> false}, { :class=>'form-control'}  %>
 	  <% end %>
 	</div>
   </div>

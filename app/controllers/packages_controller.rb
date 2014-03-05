@@ -3,7 +3,7 @@ class PackagesController < ApplicationController
   # GET /packages
   # GET /packages.json
   def index
-    @packages = Package.all
+    @packages = Package.where('status IS NOT NULL')
     @package = Package.new
   end
 
@@ -30,6 +30,7 @@ class PackagesController < ApplicationController
       if @package.user.nil?
         format.html { redirect_to :back, alert: 'Package create failed. No user selected' }
       elsif @package.save
+        Logging.log_manual_action nil, @package
         @package.generate_barcode
         format.html { redirect_to :back, notice: 'Package was successfully created.' }
         format.json { render action: 'show', status: :created, location: @package }
@@ -44,10 +45,10 @@ class PackagesController < ApplicationController
   # PATCH/PUT /packages/1.json
   def update
     respond_to do |format|
-      logger.info package_params
       if package_params[:user_id] == ""
         format.html { redirect_to :back, alert: 'Package save failed. No user selected' }
       elsif @package.update(package_params)
+        Logging.log_manual_action nil, @package
         format.html { redirect_to packages_path, notice: 'Package was successfully updated.' }
         format.json { head :no_content }
       else
@@ -60,7 +61,8 @@ class PackagesController < ApplicationController
   # DELETE /packages/1
   # DELETE /packages/1.json
   def destroy
-    @package.destroy
+    @package.status = nil
+    @package.save!
     respond_to do |format|
       format.html { redirect_to packages_url }
       format.json { head :no_content }
@@ -76,13 +78,23 @@ class PackagesController < ApplicationController
       else
         locker_ids = []
       end 
-      if ( @package.status == @constant['PACKAGE_WAITING_FOR_DELIVERY'] or @package.status == @constant['PACKAGE_WAITING_FOR_DROP_OFF'] )
-        if @package.status == @constant['PACKAGE_WAITING_FOR_DELIVERY']
+      if @package.status == @constant['PACKAGE_WAITING_FOR_DELIVERY'].to_i or @package.status == @constant['PACKAGE_WAITING_FOR_DROP_OFF'].to_i  or @package.status == @constant['PACKAGE_ENROUTE_DELIVERY'].to_i or @package.status == @constant['PACKAGE_ENROUTE_DROP_OFF'].to_i or @package.status == @constant['PACKAGE_QUEUING_DELIVERY'].to_i 
+        if @package.status == @constant['PACKAGE_WAITING_FOR_DELIVERY'].to_i
           boxes = Box.where(:locker_id => locker_ids).select{ 
             |b| b.status == @constant['BOX_IDLE'] or ( b.status == @constant['BOX_RETURNED'] and b.backup_package.nil? ) 
           }
-        else ( @package.status == @constant['PACKAGE_WAITING_FOR_DROP_OFF'] )
+        elsif @package.status == @constant['PACKAGE_ENROUTE_DELIVERY'].to_i 
+          boxes = Box.where(:locker_id => @package.box.locker_id).select{ 
+            |b| b.status == @constant['BOX_IDLE'] or ( b.status == @constant['BOX_RETURNED'] and b.backup_package.nil? ) 
+          }
+        elsif @package.status == @constant['PACKAGE_QUEUING_DELIVERY'].to_i
+          boxes = Box.where(:locker_id => @package.backup_box.locker_id).select{ 
+            |b| b.status == @constant['BOX_IDLE'] or ( b.status == @constant['BOX_RETURNED'] and b.backup_package.nil? ) 
+          }
+        elsif @package.status == @constant['PACKAGE_WAITING_FOR_DROP_OFF'].to_i
           boxes = Box.where(:locker_id => locker_ids).select{ |b| b.status == @constant['BOX_IDLE'] }
+        elsif @package.status == @constant['PACKAGE_ENROUTE_DROP_OFF'].to_i
+          boxes = Box.where(:locker_id => @package.box.locker_id).select{ |b| b.status == @constant['BOX_IDLE'] }
         end
         @boxes_array = []
         logger.info boxes.size
@@ -103,7 +115,7 @@ class PackagesController < ApplicationController
         }
         format.json { render json: { :status => 'success', :result => @boxes_array} } 
       else
-        format.json{ render json: { :status => 'error'} }
+        format.json{ render json: { :status => 'error', :message => 'Invalid Package Status'} }
       end
     end
   end

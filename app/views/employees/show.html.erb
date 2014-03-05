@@ -46,7 +46,7 @@
   	  <%= select '', :boxes, @boxes.collect{|b|
 	  	  	print_info = b.branch.name + '_' + b.locker.name + '_' + b.name
 	  	  	[print_info, b.id]
-  	      }, {:include_blank => false} , {:multiple => true, :size => 30} %><br />
+  	      }, {:include_blank => false, :selected => @employee.permissions.collect{|p| p.box_id}} , {:multiple => true, :size => 30} %><br />
   	  <%= submit_tag 'Set Permissions' %>
   	  <%= hidden_field_tag :id, @employee.id %>
   	<% end %> 
