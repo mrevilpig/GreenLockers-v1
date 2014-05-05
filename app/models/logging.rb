@@ -27,7 +27,6 @@ class Logging < ActiveRecord::Base
                 package_id: pid, package_status: pstatus, syntax_type: stype,
                 occupied_when_open: owo, occupied_when_close: owc, action_type: action_type
     }
-    logger.info p
     @logging = Logging.new(p)
     @logging.save!
   end
@@ -279,6 +278,14 @@ class Logging < ActiveRecord::Base
       # should be user or staff who is using the system
       time = self.request_time
       sentence = "[#{type}] Package (originally assigned into Box #{box}) #{barcode} was reset to #{status} by #{person}. "
+      return sentence
+    when CONSTANT['SYNTAX_BOX_INTRUDED']
+      type = 'Box Intruded'
+      box = self.box.locker.name + '-' + self.box.name
+      sentence = "[#{type}] Box #{box} was opened by unknown method."
+      if self.package
+        sentence += " Package #{self.package.barcode} was in the box."
+      end
       return sentence
     else
       return '-'

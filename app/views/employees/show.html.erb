@@ -32,25 +32,37 @@
 
 <p>
   <strong>Role:</strong>
-  <%= @employee.role %>
+  <%= @employee.print_role %>
 </p>
 
 <p>
   <strong>Password:</strong>
   <%= @employee.password %>
 </p>
-
-<p>
-  <strong>Package:</strong>
+<% if @employee.check_role 'EMPLOYEE_ROLE_OPERATOR' %>
+  <p>
+  	<strong>Operator Permissions</strong>
   	<%= form_tag("set_permissions", method: "post") do %>
   	  <%= select '', :boxes, @boxes.collect{|b|
 	  	  	print_info = b.branch.name + '_' + b.locker.name + '_' + b.name
-	  	  	[print_info, b.id]
-  	      }, {:include_blank => false, :selected => @employee.permissions.collect{|p| p.box_id}} , {:multiple => true, :size => 30} %><br />
+	  	  	[print_info, b.id] }, {:include_blank => false, :selected => @employee.permissions.collect{ |p| p.box_id } } , {:multiple => true, :size => 30} %><br />
   	  <%= submit_tag 'Set Permissions' %>
   	  <%= hidden_field_tag :id, @employee.id %>
   	<% end %> 
-</p>
+  </p>
+<% end %>
+<% if @employee.check_role 'EMPLOYEE_ROLE_DEVICE_ADMIN' %>
+  <p>
+  	<strong>Device Admin Privileges</strong>
+  	<%= form_tag("set_privileges", method: "post") do %>
+  	  <%= select '', :lockers, @lockers.collect{|l|
+	  	  	print_info = l.branch.name + '_' + l.name
+	  	  	[print_info, l.id] }, {:include_blank => false, :selected => @employee.privileges.collect{ |p| p.locker_id } } , {:multiple => true, :size => 10} %><br />
+  	  <%= submit_tag 'Set Privileges' %>
+  	  <%= hidden_field_tag :id, @employee.id %>
+  	<% end %> 
+  </p>
+<% end %>
 
 <%= link_to 'Edit', edit_employee_path(@employee) %> |
 <%= link_to 'Back', employees_path %>

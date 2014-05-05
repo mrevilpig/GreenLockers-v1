@@ -17,6 +17,7 @@
         <td><%= locker.branch.name %></td>
         <td><%= locker.name %></td>
         <td><%= link_to 'Manage Boxes', locker %></td>
+        <td><%= link_to 'Sync', sync_locker_path(locker), method: :post %></td>
         <td><%= link_to 'Edit', edit_locker_path(locker) %></td>
         <td><%= link_to 'Destroy', locker, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>

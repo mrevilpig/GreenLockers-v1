@@ -1,5 +1,5 @@
 class EmployeesController < ApplicationController
-  before_action :set_employee, only: [:show, :edit, :update, :destroy, :set_permissions]
+  before_action :set_employee, only: [:show, :edit, :update, :destroy, :set_permissions, :set_privileges]
   # GET /employees
   # GET /employees.json
   def index
@@ -10,6 +10,7 @@ class EmployeesController < ApplicationController
   # GET /employees/1.json
   def show
     @boxes = Box.all
+    @lockers = Locker.all
   end
 
   # GET /employees/new
@@ -63,20 +64,85 @@ class EmployeesController < ApplicationController
   
   def set_permissions
     respond_to do |format|
+      old_boxes = @employee.permissions.collect{|p| p.box_id}
       @employee.permissions.destroy_all
       boxes = params[:boxes]
       boxes.delete_at(0)
       boxes.each do |b|
         box = Box.find(b.to_i)
-        logger.info box.locker.name
+        #logger.info box.locker.name
         p = Permission.new(employee_id: params[:id].to_i, box_id: b.to_i, update_request_id: (box.locker.permission_request_id + 1))
         p.save!
       end
+      new_boxes = boxes.collect{|i| i.to_i}
+      additions = new_boxes - old_boxes
+      removals = old_boxes - new_boxes
+      # to figure out which devices to notice and which not
+      new_lockers = {}
+      new_boxes.each do |b|
+        box = Box.find b
+        if new_lockers[box.locker.name].nil?
+          new_lockers[box.locker.name] = [box.name]
+        else
+          new_lockers[box.locker.name].push box.name
+        end
+      end
+      #logger.info new_lockers
+      old_lockers = {}
+      old_boxes.each do |b|
+        box = Box.find b
+        if old_lockers[box.locker.name].nil?
+          old_lockers[box.locker.name] = [box.name]
+        else
+          old_lockers[box.locker.name].push box.name
+        end
+      end
+      #logger.info old_lockers
+      old_lockers.each do |l,b|
+        if new_lockers[l].nil?
+          @employee.remove_operator_info l
+        end
+      end
+      changed = {}
+      new_lockers.each do |l,b|
+        if old_lockers[l].nil?
+          @employee.push_operator_info l, b
+        elsif old_lockers[l] - new_lockers[l] != [] or new_lockers[l] - old_lockers[l] != []
+          @employee.push_operator_info l, b
+        end
+      end
+
+      
       #if .package_dropped_off
       format.html { redirect_to @employee, notice: 'Permissions successfully set.' }
       #else
       #  format.html { redirect_to @box, notice: 'Package drop off error.' }
       #end
+    end
+  end
+  
+  def set_privileges
+    respond_to do |format|
+      old_lockers = @employee.privileges.collect{|p| p.locker_id}
+      @employee.privileges.destroy_all
+      lockers = params[:lockers]
+      lockers.delete_at(0)
+      lockers.each do |l|
+        locker = Locker.find(l.to_i)
+        #logger.info locker.name
+        p = Privilege.new(employee_id: params[:id].to_i, locker_id: l.to_i)
+        p.save!
+      end
+      new_lockers = lockers.collect{|i| i.to_i}
+      (old_lockers - new_lockers).each do |l|
+        locker = Locker.find l
+        @employee.remove_admin_info locker.name
+      end
+      (new_lockers - old_lockers).each do |l|
+        locker = Locker.find l
+        @employee.push_admin_info locker.name
+      end
+      format.html { redirect_to @employee, notice: 'Privileges successfully set.' }
     end
   end
 

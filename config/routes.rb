@@ -1,10 +1,12 @@
 GreenLockers::Application.routes.draw do
   root :to => "pages#index"
-  post "api/DoorOpened" => "api#DoorOpened"
-  post "api/DropOff"
-  post "api/UpdateAccessInfo"
-  post "api/UpdatePermission"
-  post "api/BarcodeNotExist"
+  post "api/DoorOpened(.:format)" => "api#DoorOpened"
+  post "api/DropOff(.:format)"
+  post "api/SyncAccessInfo(.:format)"
+  post "api/SyncOperatorInfo(.:format)"
+  post "api/SyncAdminInfo(.:format)"
+  post "api/BarcodeNotExist(.:format)"
+  post "api/BoxIntruded(.:format)"
   
   post "boxes/assign"
   post "boxes/assign_backup"
@@ -14,8 +16,12 @@ GreenLockers::Application.routes.draw do
   post "boxes/picked_up"
   post "boxes/dropped_off"
   post "boxes/received"
+  post "boxes/:id/open", to: "boxes#open", as: "open_box"
+  
+  post "lockers/:id/sync", to: "lockers#sync", as: "sync_locker"
   
   post "employees/set_permissions"
+  post "employees/set_privileges"
   
   resources :lockers
 

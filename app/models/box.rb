@@ -76,7 +76,7 @@ class Box < ActiveRecord::Base
       if self.save
         pin = self.access.generate_pin
         if pin
-          self.package.user.send_pick_up_pin pin
+          self.package.user.send_pick_up_pin pin  #TODO
           return true
         end
       end
@@ -88,7 +88,7 @@ class Box < ActiveRecord::Base
   def package_picked_up
     self.status = CONSTANT['BOX_IDLE']
     package = self.package
-    package.user.send_picked_up_notification
+    package.user.send_picked_up_notification   #TODO
     package.status = CONSTANT['PACKAGE_DONE_DELIVERY']
     if package.save
       self.package = nil
@@ -236,6 +236,24 @@ class Box < ActiveRecord::Base
         prev_backup_box.save!
       end
       return true
+    end
+    return false
+  end
+  
+  def remote_open
+    uri = URI.parse("http://echo.jsontest.com/status/true")
+
+    http = Net::HTTP.new(uri.host, uri.port)
+    #request = Net::HTTP::Get.new(uri.request_uri)
+    request = Net::HTTP::Post.new(uri.request_uri)
+    request.set_form_data({"device_id" => self.locker.name.to_s, "box_id" => self.name.to_s})
+    #request.basic_auth("username", "password")
+    response = http.request(request)
+    if response.body
+      body = JSON.parse response.body
+      if body["status"] == 'true'
+        return true
+      end
     end
     return false
   end

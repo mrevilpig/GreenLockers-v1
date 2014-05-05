@@ -114,7 +114,10 @@
   <% end %>
 </p>
 
-
+<p>
+  <strong>Remote open:</strong>
+  <%= link_to 'Open', open_box_path(@box), method: :post %>
+</p>
 
 <%= link_to 'Edit', edit_box_path(@box) %> |
 <%= link_to 'Back', locker_path(@box.locker) %>

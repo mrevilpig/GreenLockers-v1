@@ -1,5 +1,5 @@
 class LockersController < ApplicationController
-  before_action :set_locker, only: [:show, :edit, :update, :destroy, :init_locker]
+  before_action :set_locker, only: [:show, :sync, :edit, :update, :destroy, :init_locker]
   # GET /lockers
   # GET /lockers.json
   def index
@@ -19,6 +19,16 @@ class LockersController < ApplicationController
           true == false
         end 
       }
+  end
+  
+  def sync
+    respond_to do |format|
+      if @locker.enforce_sync
+        format.html { redirect_to lockers_path, notice: 'Sync request is sent.' }
+      else
+        format.html { redirect_to lockers_path, alert: 'Oops. Something went wrong.' }
+      end
+    end
   end
 
   # GET /lockers/new

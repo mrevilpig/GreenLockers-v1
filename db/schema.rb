@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140210000743) do
+ActiveRecord::Schema.define(version: 20140423044848) do
 
   create_table "accesses", force: true do |t|
     t.integer  "box_id"
@@ -43,6 +43,18 @@ ActiveRecord::Schema.define(version: 20140210000743) do
     t.string   "city"
     t.integer  "state_id"
     t.string   "zip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "devicelogs", force: true do |t|
+    t.integer  "locker_id"
+    t.integer  "type"
+    t.string   "barcode"
+    t.integer  "employee_id"
+    t.datetime "time"
+    t.integer  "package_id"
+    t.integer  "package_status"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -118,6 +130,13 @@ ActiveRecord::Schema.define(version: 20140210000743) do
   add_index "permissions", ["box_id"], name: "index_permissions_on_box_id", using: :btree
   add_index "permissions", ["employee_id"], name: "index_permissions_on_employee_id", using: :btree
   add_index "permissions", ["update_request_id"], name: "index_permissions_on_update_request_id", using: :btree
+
+  create_table "privileges", force: true do |t|
+    t.integer  "employee_id"
+    t.integer  "locker_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "states", force: true do |t|
     t.string   "name"

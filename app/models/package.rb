@@ -4,6 +4,7 @@ class Package < ActiveRecord::Base
   belongs_to :backup_box, :class_name => 'Box'
   belongs_to :preferred_branch, :class_name => 'Branch'
   has_many :loggings
+  has_many :devicelogs
   
   def generate_barcode
     barcode = 1000000000 + self.id

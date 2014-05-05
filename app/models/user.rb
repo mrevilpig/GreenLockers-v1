@@ -4,19 +4,19 @@ class User < ActiveRecord::Base
   belongs_to :state
   
   def send_pick_up_pin pin
-    
+    #TODO
   end
   
   def send_drop_off_pin pin
-    
+    #TODO
   end
   
   def send_picked_up_notification
-    
+    #TODO
   end
   
   def send_dropped_off_notification
-    
+    #TODO
   end
   
 end

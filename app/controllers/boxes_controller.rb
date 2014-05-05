@@ -1,5 +1,5 @@
 class BoxesController < ApplicationController
-  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :assign_backup, :reassign, :reassign_backup, :delivered, :picked_up, :dropped_off, :received]
+  before_action :set_box, only: [:show, :edit, :update, :destroy, :assign, :assign_backup, :reassign, :reassign_backup, :delivered, :picked_up, :dropped_off, :received, :open]
   # GET /lockers
   # GET /lockers.json
   def index
@@ -21,6 +21,16 @@ class BoxesController < ApplicationController
       }
     @unassigned_packages_for_delivery = @unassigned_packages.select{|p| p.status == '0' }
     @selected_backup_package = @box.backup_package
+  end
+  
+  def open
+    respond_to do |format|
+      if @box.remote_open
+        format.html { redirect_to @box, notice: 'Box is remotely opened.' }
+      else
+        format.html { redirect_to @box, alert: 'Oops. Something went wrong. Action is not performed.' }
+      end
+    end
   end
 
   # GET /lockers/new

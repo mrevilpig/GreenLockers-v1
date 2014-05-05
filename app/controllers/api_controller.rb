@@ -19,10 +19,22 @@ class ApiController < ApplicationController
       @message = 'Box not found'
       render json: { :status => false, :message => @message }
       return false 
-    end
+    end 
     
-    occupied_when_open = params[:occupied_when_open]
-    occupied_when_close = params[:occupied_when_close]
+    if params[:occupied_when_open] == '1'
+      params[:occupied_when_open] = true
+      occupied_when_open = true
+    else
+      params[:occupied_when_open] = false
+      occupied_when_open = false
+    end
+    if params[:occupied_when_close] == '1'
+      params[:occupied_when_close] = true
+      occupied_when_close = true
+    else
+      params[:occupied_when_close] = false
+      occupied_when_close = false
+    end
     
     #check if the status is error:
     if @box.status == @constant['BOX_ERROR'] && !occupied_when_close && params[:timestamp_close] && params[:type] == @constant['DOOR_OPENED_BY_STAFF']
@@ -156,7 +168,7 @@ class ApiController < ApplicationController
     if @message != ''
       render json: { :status => false, :message => @message }
     elsif @box.save
-      render action: 'DoorOpened', status: :success, location: @api
+      render json: { :status => true, :message => @message }
     end
     
   end
@@ -165,28 +177,61 @@ class ApiController < ApplicationController
     
   end
 
-  def UpdateAccessInfo
+  def SyncAccessInfo
     locker = Locker.find_by_name(params[:device_id])
-    @accesses = Access.where('box_id in (?) and update_request_id = ?', locker.boxes.collect{|b| b.id}, params[:request_id])
-    logger.info @accesses
-    locker.access_request_id = params[:request_id]
-    locker.save!
+    @accesses = Access.where('box_id in (?)', locker.boxes.collect{|b| b.id})
+    render json: { :status => true, :updates => @accesses }
   end
 
-  def UpdatePermission
+  def SyncOperatorInfo
     locker = Locker.find_by_name(params[:device_id])
     @permissions = Permission.where('box_id in (?)', locker.boxes.collect{|b| b.id}).group_by{|p| p.employee_id}
-    locker.permission_request_id = params[:request_id]
-    locker.save!
     @updates = []
     @permissions.each do |e,perm|
-      update = {:staff_id => e.to_s, :box_ids => perm.collect{|p| p.box.name.to_s}}
+      update = {:staff_id => e.to_s, :box_ids => perm.collect{|p| p.box.name.to_s}, :password => perm.employee.password}
+      @updates.push update
+    end
+    render json: { :status => true, :updates => @updates }
+  end
+  
+  def SyncAdminInfo
+    locker = Locker.find_by_name(params[:device_id])
+    @privileges = Privilege.where('locker_id = (?)', locker.id)
+    @updates = []
+    @privileges.each do |p|
+      update = {:staff_id => p.employee_id.to_s, :password => p.employee.password}
       @updates.push update
     end
     render json: { :status => true, :updates => @updates }
   end
   
   def BarcodeNotExist
-    
+    t = params[:timestamp].nil? ? nil : Time.parse(params[:timestamp])
+    l = Locker.find params[:device_id].to_i
+    package = Package.where( 'barcode = (?)', params[:barcode] ).first
+    pid = package.nil? ? nil : package.id
+    pstatus = package.nil? ? nil : package.status 
+    p = { time: t, locker_id: l.id, barcode: params[:barcode], package_id: pid, package_status: pstatus, employee_id: params[:staff_id], type: @constant['DEVICE_LOG_BARCODE_NOT_EXIST']} 
+    dl = Devicelog.new p
+    dl.save!
+    render json: { :status => true, :message => @message }
+  end
+  
+  def BoxIntruded
+    t = params[:timestamp].nil? ? nil : Time.parse(params[:timestamp]) 
+    b = Box.where(name: params[:box_id]).select{|b| b.locker.name == params[:device_id]}.first
+    pid = box.package.nil? ? nil : box.package.id
+    pstatus = box.package.nil? ? nil : box.package.status
+    stype = @constant['SYNTAX_BOX_INTRUDED']
+    action_type = @constant['ACTION_MAL']
+    p = {
+                open_time: nil, close_time: nil, request_time: t,
+                employee_id: nil, log_type: 3, box_id: b.id, box_status: box.status, 
+                package_id: pid, package_status: pstatus, syntax_type: stype,
+                occupied_when_open: nil, occupied_when_close: nil, action_type: action_type
+    }
+    l = Logging.new p
+    l.save!
+    render json: { :status => true, :message => @message }
   end
 end
