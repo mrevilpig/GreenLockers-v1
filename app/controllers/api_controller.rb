@@ -180,7 +180,12 @@ class ApiController < ApplicationController
   def SyncAccessInfo
     locker = Locker.find_by_name(params[:device_id])
     @accesses = Access.where('box_id in (?)', locker.boxes.collect{|b| b.id})
-    render json: { :status => true, :updates => @accesses }
+    results = []
+    @accesses.each do |a|
+      res = { :box_id => a.box.name, :barcode => a.barcode, :pin => a.pin }
+      results.push res
+    end
+    render json: { :status => true, :updates => results }
   end
 
   def SyncOperatorInfo
@@ -188,7 +193,9 @@ class ApiController < ApplicationController
     @permissions = Permission.where('box_id in (?)', locker.boxes.collect{|b| b.id}).group_by{|p| p.employee_id}
     @updates = []
     @permissions.each do |e,perm|
-      update = {:staff_id => e.to_s, :box_ids => perm.collect{|p| p.box.name.to_s}, :password => perm.employee.password}
+      employee = Employee.find e
+      perm_to_push = perm.select{|p| p.box.status == @constant['BOX_RETURNED']} 
+      update = {:staff_id => e.to_s, :box_ids => perm_to_push.collect{|p| p.box.name.to_s}, :password => employee.password}
       @updates.push update
     end
     render json: { :status => true, :updates => @updates }
@@ -207,31 +214,31 @@ class ApiController < ApplicationController
   
   def BarcodeNotExist
     t = params[:timestamp].nil? ? nil : Time.parse(params[:timestamp])
-    l = Locker.find params[:device_id].to_i
+    l = Locker.find_by_name params[:device_id]
     package = Package.where( 'barcode = (?)', params[:barcode] ).first
     pid = package.nil? ? nil : package.id
     pstatus = package.nil? ? nil : package.status 
-    p = { time: t, locker_id: l.id, barcode: params[:barcode], package_id: pid, package_status: pstatus, employee_id: params[:staff_id], type: @constant['DEVICE_LOG_BARCODE_NOT_EXIST']} 
+    p = { time: t, locker_id: l.id, barcode: params[:barcode], package_id: pid, package_status: pstatus, employee_id: params[:staff_id], log_type: @constant['DEVICE_LOG_BARCODE_NOT_EXIST']} 
     dl = Devicelog.new p
     dl.save!
-    render json: { :status => true, :message => @message }
+    render json: { :status => true }
   end
   
   def BoxIntruded
     t = params[:timestamp].nil? ? nil : Time.parse(params[:timestamp]) 
-    b = Box.where(name: params[:box_id]).select{|b| b.locker.name == params[:device_id]}.first
+    box = Box.where(name: params[:box_id]).select{|b| b.locker.name == params[:device_id]}.first
     pid = box.package.nil? ? nil : box.package.id
     pstatus = box.package.nil? ? nil : box.package.status
     stype = @constant['SYNTAX_BOX_INTRUDED']
     action_type = @constant['ACTION_MAL']
     p = {
                 open_time: nil, close_time: nil, request_time: t,
-                employee_id: nil, log_type: 3, box_id: b.id, box_status: box.status, 
+                employee_id: nil, log_type: 3, box_id: box.id, box_status: box.status, 
                 package_id: pid, package_status: pstatus, syntax_type: stype,
                 occupied_when_open: nil, occupied_when_close: nil, action_type: action_type
     }
     l = Logging.new p
     l.save!
-    render json: { :status => true, :message => @message }
+    render json: { :status => true }
   end
 end

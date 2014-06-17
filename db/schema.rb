@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20140423044848) do
 
   create_table "devicelogs", force: true do |t|
     t.integer  "locker_id"
-    t.integer  "type"
+    t.integer  "log_type"
     t.string   "barcode"
     t.integer  "employee_id"
     t.datetime "time"

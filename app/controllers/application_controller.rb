@@ -8,6 +8,6 @@ class ApplicationController < ActionController::Base
   
   private 
     def set_constant
-      @constant = YAML.load_file("config/constant.yml")
+      @constant = YAML.load_file("#{Rails.root}/config/constant.yml")
     end
 end

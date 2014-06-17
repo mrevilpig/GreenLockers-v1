@@ -7,6 +7,7 @@ class Locker < ActiveRecord::Base
   has_many :packages, :through => :boxes
   has_many :privileges
   has_many :devicelog
+  CONSTANT = YAML.load_file("#{Rails.root}/config/constant.yml")
   
   # Create associated boxes after creating the locker
   def init_locker
@@ -42,17 +43,18 @@ class Locker < ActiveRecord::Base
   end
   
   def enforce_sync
-    uri = URI.parse("http://echo.jsontest.com/status/true")
+    uri = URI.parse(CONSTANT['PROXY_SERVER_BASE_URL_1'])
+    #uri = URI.parse('http://echo.jsontest.com/status/true')
 
     http = Net::HTTP.new(uri.host, uri.port)
     #request = Net::HTTP::Get.new(uri.request_uri)
     request = Net::HTTP::Post.new(uri.request_uri)
-    request.set_form_data({"device_id" => self.name.to_s})
+    request.set_form_data({"action" => "EnforceSync", "sDeviceID" => self.name.to_s, "uMillsec" => '6000'})
     #request.basic_auth("username", "password")
     response = http.request(request)
     if response.body
       body = JSON.parse response.body
-      if body["status"] == 'true'
+      if body["status"]
         return true
       end
     end

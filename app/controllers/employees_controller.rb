@@ -75,15 +75,13 @@ class EmployeesController < ApplicationController
         p.save!
       end
       new_boxes = boxes.collect{|i| i.to_i}
-      additions = new_boxes - old_boxes
-      removals = old_boxes - new_boxes
       # to figure out which devices to notice and which not
       new_lockers = {}
       new_boxes.each do |b|
         box = Box.find b
-        if new_lockers[box.locker.name].nil?
+        if box.status == @constant['BOX_RETURNED'] and new_lockers[box.locker.name].nil?
           new_lockers[box.locker.name] = [box.name]
-        else
+        elsif box.status == @constant['BOX_RETURNED']
           new_lockers[box.locker.name].push box.name
         end
       end
@@ -91,9 +89,9 @@ class EmployeesController < ApplicationController
       old_lockers = {}
       old_boxes.each do |b|
         box = Box.find b
-        if old_lockers[box.locker.name].nil?
+        if box.status == @constant['BOX_RETURNED'] and old_lockers[box.locker.name].nil?
           old_lockers[box.locker.name] = [box.name]
-        else
+        elsif box.status == @constant['BOX_RETURNED']
           old_lockers[box.locker.name].push box.name
         end
       end

@@ -2,7 +2,7 @@ class CreateDevicelogs < ActiveRecord::Migration
   def change
     create_table :devicelogs do |t|
       t.integer :locker_id
-      t.integer :type
+      t.integer :log_type
       t.string :barcode
       t.integer :employee_id
       t.datetime :time

@@ -2,7 +2,7 @@ class Logging < ActiveRecord::Base
   belongs_to :box
   belongs_to :employee
   belongs_to :package
-  CONSTANT = YAML.load_file("config/constant.yml")
+  CONSTANT = YAML.load_file("#{Rails.root}/config/constant.yml")
   
   def self.log_action params, box, package, action_type
     owo = params[:occupied_when_open] ? 1:0
@@ -159,7 +159,7 @@ class Logging < ActiveRecord::Base
     when 8
       return "DropOff - Done"
     when nil
-      return "Package Destroyed"
+      return "No Package"
     else
       return "Unknown"
     end

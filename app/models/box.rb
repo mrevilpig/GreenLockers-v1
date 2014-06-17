@@ -8,7 +8,7 @@ class Box < ActiveRecord::Base
   has_one :backup_package, :foreign_key => 'backup_box_id', :class_name => 'Package'
   has_one :access
   delegate :branch, :to => :locker
-  CONSTANT = YAML.load_file("config/constant.yml")
+  CONSTANT = YAML.load_file("#{Rails.root}/config/constant.yml")
   
   # assign a box for package delivery
   def deliver_package package_id
@@ -59,6 +59,7 @@ class Box < ActiveRecord::Base
             prev_box.access.clear
             prev_box.save!
           elsif prev_backup_box
+            prev_backup_box.access.clear
             prev_backup_box.save!
           end
           return true
@@ -158,11 +159,12 @@ class Box < ActiveRecord::Base
     self.package.status = CONSTANT['PACKAGE_DROPPED_OFF_DROP_OFF']
     if self.package.save
       if self.save
-        if self.access.save_barcode self.package.barcode
-          #enable backup capacity
-          #assign_employee to pick up
-          return true
+        if self.permissions
+          self.permissions.each do |p|
+            p.employee.push_operator_info self.locker.name, self.name
+          end
         end
+        return true
       end
     end
     return false
@@ -201,6 +203,7 @@ class Box < ActiveRecord::Base
       current.status = CONSTANT['PACKAGE_WAITING_FOR_DELIVERY']
       self.backup_package = nil
       self.save!
+      self.access.clear
       current.save!
       Logging.log_manual_action self, current
     end 
@@ -226,6 +229,7 @@ class Box < ActiveRecord::Base
     end
     return false if package.status != CONSTANT['PACKAGE_WAITING_FOR_DELIVERY'].to_i
     self.backup_package = package
+    self.access.save_barcode package.barcode
     package.status = CONSTANT['PACKAGE_QUEUING_DELIVERY']
     if package.save and self.save
       Logging.log_manual_action self, package
@@ -233,6 +237,7 @@ class Box < ActiveRecord::Base
         prev_box.access.clear
         prev_box.save!
       elsif prev_backup_box
+        prev_backup_box.access.clear
         prev_backup_box.save!
       end
       return true
@@ -241,17 +246,20 @@ class Box < ActiveRecord::Base
   end
   
   def remote_open
-    uri = URI.parse("http://echo.jsontest.com/status/true")
+    uri = URI.parse(CONSTANT['PROXY_SERVER_BASE_URL_1'])
+    #uri = URI.parse('http://echo.jsontest.com/status/true')
 
     http = Net::HTTP.new(uri.host, uri.port)
     #request = Net::HTTP::Get.new(uri.request_uri)
+    logger.info uri.request_uri
     request = Net::HTTP::Post.new(uri.request_uri)
-    request.set_form_data({"device_id" => self.locker.name.to_s, "box_id" => self.name.to_s})
+    request.set_form_data({"action" => 'OpenBox', "sDeviceID" => self.locker.name.to_s, "box_id" => self.name.to_s, 'uMillsec' => "5000"})
     #request.basic_auth("username", "password")
     response = http.request(request)
     if response.body
       body = JSON.parse response.body
-      if body["status"] == 'true'
+      logger.info body
+      if body["status"]
         return true
       end
     end
@@ -282,19 +290,18 @@ class Box < ActiveRecord::Base
   end
   
   def print_status
-    constant = YAML.load_file("config/constant.yml")
     case self.status
-    when constant['BOX_IDLE']
+    when CONSTANT['BOX_IDLE']
       return "Idle" 
-    when constant['BOX_DELIVERING']
+    when CONSTANT['BOX_DELIVERING']
       return "Delivering"
-    when constant['BOX_DELIVERED']
+    when CONSTANT['BOX_DELIVERED']
       return "Delivered"
-    when constant['BOX_RETURNING']
+    when CONSTANT['BOX_RETURNING']
       return "Returning"
-    when constant['BOX_RETURNED']
+    when CONSTANT['BOX_RETURNED']
       return "Returned"
-    when constant['BOX_ERROR']
+    when CONSTANT['BOX_ERROR']
       return "Error"
     else
       return "Unknown"
